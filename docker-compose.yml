@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: pisico-backend-db
+    environment:
+      POSTGRES_DB: pisico-backend
+      POSTGRES_USER: pisico-backend
+      POSTGRES_PASSWORD: pisico-backend
+    ports:
+      - "5433:5432" #Change to 5433
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+# Volume to persist the data
+volumes:
+  postgres_data:
