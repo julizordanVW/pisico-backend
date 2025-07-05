@@ -6,5 +6,5 @@ CREATE TABLE property_amenities
 
     PRIMARY KEY (property_id, amenity_id),
     FOREIGN KEY (property_id) REFERENCES properties (id) ON DELETE CASCADE,
-    FOREIGN KEY (amenity_id) REFERENCES amenities (id) ON DELETE CASCADE,
+    FOREIGN KEY (amenity_id) REFERENCES amenities (id) ON DELETE CASCADE
 );

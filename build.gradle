@@ -1,9 +1,20 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath('org.flywaydb:flyway-database-postgresql:10.4.1')
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.2'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.flywaydb.flyway' version '11.3.4'
-
+    id 'org.flywaydb.flyway' version '10.4.1'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'nu.studer.jooq' version '8.2.1'
+    id "org.jetbrains.kotlin.kapt" version "2.2.0"
 }
 
 group = 'com.pisico'
@@ -21,7 +32,6 @@ configurations {
     }
 }
 
-
 repositories {
     mavenCentral()
 }
@@ -30,14 +40,14 @@ dependencies {
     implementation(
             'org.springframework.boot:spring-boot-starter-data-jpa',
             'org.springframework.boot:spring-boot-starter-web',
-            'org.flywaydb:flyway-database-postgresql',
+            'org.postgresql:postgresql:42.6.0',
             'org.springframework.boot:spring-boot-starter-security',
             'org.springframework.boot:spring-boot-starter-mail',
             'org.springframework.boot:spring-boot-starter-oauth2-client',
-            //Frontend borrar
-            'org.webjars:jquery:3.4.1',
-            'org.webjars:bootstrap:4.3.1',
-            'org.webjars:webjars-locator-core'
+            'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0',
+            'org.jooq:jooq:3.18.7',
+            'org.mapstruct:mapstruct:1.6.3',
+            'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     )
     compileOnly(
             'org.projectlombok:lombok'
@@ -45,9 +55,55 @@ dependencies {
     runtimeOnly(
             'org.postgresql:postgresql'
     )
+    jooqGenerator 'org.postgresql:postgresql:42.6.0'
+    kapt 'org.mapstruct:mapstruct-processor:1.6.3'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+jooq {
+    configurations {
+        main {
+            generationTool {
+                jdbc {
+                    driver = "org.postgresql.Driver"
+                    url = "jdbc:postgresql://localhost:5433/pisico-backend"
+                    user = "pisico-backend"
+                    password = "pisico-backend"
+                }
+                generator {
+                    database {
+                        inputSchema = "public"
+                        includes = ".*"
+                        excludes = "flyway_schema_history|liquibase_database_changelog.*"
+                        outputSchemaToDefault = true
+                    }
+                    generate {
+                        pojos = true
+                        records = true
+                        daos = false
+                        jpaAnnotations = false
+                    }
+                    target {
+                        packageName = "com.pisico.backend.jooq.generated"
+                        directory = "build/generated/source/jooq"
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+flyway {
+    driver = 'org.postgresql.Driver'
+    url = 'jdbc:postgresql://localhost:5433/pisico-backend'
+    user = 'pisico-backend'
+    password = 'pisico-backend'
+    schemas = ['public']
+    locations = ['filesystem:src/main/resources/db/migration']
+    loggers = ['slf4j']
 }
 
 tasks.named('test') {

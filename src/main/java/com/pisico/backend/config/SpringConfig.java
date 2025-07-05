@@ -17,7 +17,11 @@ public class SpringConfig {
         return httpSecurity
                 .authorizeHttpRequests(requests ->
                         requests
-                                .requestMatchers("/", "/index.html", "/error", "/webjars/**").permitAll()
+                                .requestMatchers(
+                                        "/", "/index.html", "/error", "/webjars/**",
+                                        "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
+                                        "/properties/**" // 👈 Agrega esto
+                                ).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e

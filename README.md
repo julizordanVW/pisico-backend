@@ -53,12 +53,10 @@ You should connect to the database to the the created tables, these are in the  
 
 _Name the technologies used in the project._
 * [Spring](https://spring.io/) - Framework Used.
-* [React](https://reactjs.org/) - UI Library.
-* [Hibernate](https://hibernate.org/) - ORM.
 
-## Contributing
-
-Describe the steps to follow if someone wants to contribute to your project.
+## Swagger 
+You can access the Swagger documentation at the following URL: \
+http://localhost:8080/swagger-ui/index.html
 
 ## Documentation
 
