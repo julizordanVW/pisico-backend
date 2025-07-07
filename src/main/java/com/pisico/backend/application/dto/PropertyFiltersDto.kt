@@ -3,6 +3,7 @@ package com.pisico.backend.application.dto
 import com.pisico.backend.domain.entities.PropertyType
 import java.math.BigDecimal
 
+//TODO : METER la paginacion y el sorting
 data class PropertyFiltersDto (
     var city: String = "Madrid",
     var postalCode: String? = null,

@@ -16,3 +16,15 @@ data class Property(
     val address: Address,
     val coordinates: Coordinates?
 )
+
+data class Address(
+    val streetAddress: String,
+    val city: String,
+    val postalCode: String,
+    val country: String
+)
+
+data class Coordinates(
+    val latitude: String,
+    val longitude: String
+)

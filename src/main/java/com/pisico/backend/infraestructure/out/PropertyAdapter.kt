@@ -40,7 +40,7 @@ open class PropertyAdapter(
                 roommates = record.get(PROPERTIES.ROOMMATES),
                 furnished = record.get(PROPERTIES.FURNISHED),
                 address = Address(
-                    address = record.get(PROPERTIES.ADDRESS),
+                    streetAddress = record.get(PROPERTIES.ADDRESS),
                     city = record.get(PROPERTIES.CITY),
                     postalCode = record.get(PROPERTIES.POSTAL_CODE),
                     country = record.get(PROPERTIES.COUNTRY)

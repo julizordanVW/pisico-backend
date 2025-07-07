@@ -7,11 +7,11 @@ import java.util.UUID
 data class PropertiesResponseDto(
     val id: UUID,
     val name: String,
-    val description: String,
+    val description: String?,
     val type: PropertyType,
     val price: BigDecimal,
     val rooms: Int,
-    val roommates: Int,
+    val roommates: Int?,
     val furnished: Boolean,
     val address: AddressResponseDto,
     val coordinates: CoordinatesResponseDto?

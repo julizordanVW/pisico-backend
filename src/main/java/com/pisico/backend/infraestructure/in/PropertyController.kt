@@ -1,14 +1,13 @@
 package com.pisico.backend.infraestructure.`in`
 
-import com.pisico.backend.application.dto.PropertiesResponseDto
-import com.pisico.backend.application.dto.PropertyFiltersDto
 import com.pisico.backend.infraestructure.`in`.dto.PageWrapper
 import com.pisico.backend.infraestructure.`in`.dto.PropertiesResponse
 import com.pisico.backend.infraestructure.`in`.dto.PropertyFiltersRequest
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
-import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -35,6 +34,12 @@ interface PropertyController {
     )
     
     fun getAllProperties(
+        @Parameter(
+            name = "filters",
+            description = "Criteria to filter properties, including city, postal code, property type, price range, rooms, roommates, and pagination/sorting options.",
+            required = true,
+            schema = Schema(implementation = PropertyFiltersRequest::class)
+        )
         @ModelAttribute filters: PropertyFiltersRequest,
     ): PageWrapper<PropertiesResponse>
 }

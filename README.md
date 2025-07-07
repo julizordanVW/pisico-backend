@@ -57,17 +57,3 @@ _Name the technologies used in the project._
 ## Swagger 
 You can access the Swagger documentation at the following URL: \
 http://localhost:8080/swagger-ui/index.html
-
-## Documentation
-
-Specify [where](https://es.wikipedia.org/wiki/Wikipedia:Portada) people can find more documentation about your project.
-
-## Acknowledgments
-
-_Mention all those who helped you build the project, inspired you etc._
-
-* [Linus Torvalds](https://github.com/torvalds)
-* [Dan Abramov](https://github.com/gaearon)
-
-## License
-Describe the project [license](https://choosealicense.com/) agreements.
