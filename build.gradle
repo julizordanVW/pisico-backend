@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath('org.flywaydb:flyway-database-postgresql:10.4.1')
+        classpath('org.flywaydb:flyway-database-postgresql:11.1.0')
     }
 }
 
@@ -11,7 +11,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.2'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.flywaydb.flyway' version '10.4.1'
+    id 'org.flywaydb.flyway' version '11.1.0'
     id 'org.jetbrains.kotlin.jvm'
     id 'nu.studer.jooq' version '8.2.1'
     id "org.jetbrains.kotlin.kapt" version "2.2.0"
@@ -61,23 +61,28 @@ dependencies {
     testImplementation(
             'org.springframework.boot:spring-boot-starter-test',
             'org.springframework.boot:spring-boot-testcontainers',
-            'org.jetbrains.kotlin:kotlin-test-junit5',
             'org.testcontainers:junit-jupiter',
             'org.testcontainers:postgresql',
-            'io.rest-assured:rest-assured:5.5.5'
+            'org.testcontainers:jdbc',
+            'io.rest-assured:rest-assured:5.5.5',
+            'org.testcontainers:testcontainers',
+            'org.jetbrains.kotlin:kotlin-test-junit5',
+            'org.flywaydb:flyway-database-postgresql:11.1.0'
     ) 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     
 }
 
 flyway {
-    driver = 'org.postgresql.Driver'
     url = 'jdbc:postgresql://localhost:5433/pisico-backend'
     user = 'pisico-backend'
     password = 'pisico-backend'
     schemas = ['public']
     locations = ['filesystem:src/main/resources/db/migration']
-    loggers = ['slf4j']
+    driver = 'org.postgresql.Driver'
+
+    ignoreMigrationPatterns = ['*:pending']
+    cleanDisabled = true
 }
 
 

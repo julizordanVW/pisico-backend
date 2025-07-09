@@ -1,31 +1,24 @@
 package com.pisico.backend.config
 
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection
+import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.utility.DockerImageName
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 
-@TestConfiguration(proxyBeanMethods = false)
-open class PostgresTestcontainersConfiguration {
-
+@Testcontainers
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+abstract class AbstractIntegrationTest {
     companion object {
-        private val postgresContainer = PostgreSQLContainer(DockerImageName.parse("postgres:13")).apply {
-            withDatabaseName("pisico-backend")
-            withUsername("pisico-backend")
-            withPassword("pisico-backend")
-            withReuse(false)
-            start()
-        }
-
-        @JvmStatic
-        @DynamicPropertySource
-        fun properties(registry: DynamicPropertyRegistry) {
-            registry.add("spring.datasource.url", postgresContainer::getJdbcUrl)
-            registry.add("spring.datasource.username", postgresContainer::getUsername)
-            registry.add("spring.datasource.password", postgresContainer::getPassword)
-            registry.add("spring.datasource.driver-class-name") { "org.postgresql.Driver" }
-        }
+        @Container
+        @ServiceConnection
+        val postgres = PostgreSQLContainer("postgres:15")
+            .withDatabaseName("testdb")
+            .withUsername("testuser")
+            .withPassword("testpass")
     }
 }
 

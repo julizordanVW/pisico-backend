@@ -14,8 +14,7 @@ data class PropertyFiltersDto (
     var minPrice: BigDecimal? = null,
     var maxPrice: BigDecimal? = null,
 
-    var minRooms: Int? = null,
-    var maxRooms: Int? = null,
+    var rooms : List<Int> = emptyList(),
 
     var roommates: Int? = null,
 )

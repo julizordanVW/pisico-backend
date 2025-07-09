@@ -11,6 +11,7 @@ data class PropertiesResponseDto(
     val type: PropertyType,
     val price: BigDecimal,
     val rooms: Int,
+    val bathrooms: Int,
     val roommates: Int?,
     val furnished: Boolean,
     val address: AddressResponseDto,

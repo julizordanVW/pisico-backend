@@ -1,5 +1,6 @@
 package com.pisico.backend.infraestructure.`in`.dto
 
+import com.pisico.backend.domain.entities.PropertyType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.math.BigDecimal
 
@@ -8,12 +9,18 @@ data class PropertiesResponse(
     val name: String,
     @Schema(name = "description", description = "Description of the property", required = true, example = "Flat with 3 rooms")
     val description: String,
+    @Schema(name = "type", description = "Type of the property", required = true)
+    val type: PropertyType,
     @Schema(name = "price", description = "Price of the property", required = true, example = "1000")
     val price: BigDecimal,
     @Schema(name = "rooms", description = "Rooms of the property", required = true, example = "3")
     val rooms: Int,
-    @Schema(name = "roommates", description = "Roommates of the property", required = true, example = "2")
+    @Schema(name = "bathrooms", description = "Bathrooms of the property", required = true, example = "1")
+    val bathrooms: Int,
+    @Schema(name = "roommates", description = "Roommates of the property", example = "2")
     val roommates: Int,
+    @Schema(name = "furnished", description = "Declares if the property is furnished or not", example = "false")
+    val furnished: Boolean,
     @Schema(name = "address", description = "Address details of the property", required = true)
     val address: AddressResponse,
     @Schema(name = "coordinates", description = "Coordinates of the property", required = true)

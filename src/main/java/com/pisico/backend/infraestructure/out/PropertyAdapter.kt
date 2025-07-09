@@ -11,6 +11,7 @@ import org.jooq.DSLContext
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.jooq.Condition
+import java.math.BigDecimal
 
 @Repository
 open class PropertyAdapter(
@@ -64,13 +65,61 @@ open class PropertyAdapter(
             filters.postalCode?.let { PROPERTIES.POSTAL_CODE.eq(it) },
             filters.country?.let { PROPERTIES.COUNTRY.eq(it) },
 
-            filters.minPrice?.let { PROPERTIES.PRICE.greaterOrEqual(it) },
-            filters.maxPrice?.let { PROPERTIES.PRICE.lessOrEqual(it) },
-
-            filters.minRooms?.let { PROPERTIES.ROOMS.greaterOrEqual(it) },
-            filters.maxRooms?.let { PROPERTIES.ROOMS.lessOrEqual(it) },
+            buildPricesCondition(filters.minPrice, filters.maxPrice),
+            
+            buildRoomsCondition(filters.rooms),
             
             filters.roommates?.let { PROPERTIES.ROOMMATES.eq(it) })
+    }
+
+    private fun buildRoomsCondition(selectedRooms: List<Int>): Condition? {
+        if (selectedRooms.isEmpty()) return null
+
+        val conditions = mutableListOf<Condition>()
+
+        if (selectedRooms.contains(4)) {
+            conditions.add(PROPERTIES.ROOMS.greaterOrEqual(4))
+        }
+
+        val normalRooms = selectedRooms.filter { it in 1..3 }
+        if (normalRooms.isNotEmpty()) {
+            conditions.add(PROPERTIES.ROOMS.`in`(normalRooms))
+        }
+
+        return when {
+            conditions.isEmpty() -> null
+            conditions.size == 1 -> conditions.first()
+            else -> conditions.reduce { acc, condition -> acc.or(condition) }
+        }
+    }
+
+    //TODO: Cambiar a ingles y hacer que devuelva 400 no 500. Como se hacia??
+    private fun buildPricesCondition(minPrice: BigDecimal?, maxPrice: BigDecimal?): Condition? {
+        if (minPrice == null && maxPrice == null) return null
+
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            throw IllegalArgumentException("El precio mínimo no puede ser mayor que el precio máximo.")
+        }
+
+        if (minPrice != null && maxPrice != null && maxPrice < minPrice) {
+            throw IllegalArgumentException("El precio máximo no puede ser menor que el precio mínimo.")
+        }
+        
+        val conditions = mutableListOf<Condition>()
+
+        if (minPrice != null) {
+            conditions.add(PROPERTIES.PRICE.greaterOrEqual(minPrice))
+        }
+
+        if (maxPrice != null) {
+            conditions.add(PROPERTIES.PRICE.lessOrEqual(maxPrice))
+        }
+
+        return when {
+            conditions.isEmpty() -> null
+            conditions.size == 1 -> conditions.first()
+            else -> conditions.reduce { acc, condition -> acc.and(condition) }
+        }
     }
 
 

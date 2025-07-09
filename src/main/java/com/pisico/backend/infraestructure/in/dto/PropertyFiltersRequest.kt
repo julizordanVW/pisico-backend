@@ -43,16 +43,10 @@ data class PropertyFiltersRequest(
     var maxPrice: BigDecimal? = null,
 
     @Schema(
-        description = "Minimum number of rooms to filter properties",
-        example = "2"
+        description = "List of number of rooms to filter properties",
+        example = "1,2,3"
     )
-    var minRooms: Int? = null,
-
-    @Schema(
-        description = "Maximum number of rooms to filter properties",
-        example = "5"
-    )
-    var maxRooms: Int? = null,
+    var rooms:  List<Int> = listOf(0),
 
     @Schema(
         description = "Number of roommates to filter properties",
