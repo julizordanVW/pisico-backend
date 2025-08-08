@@ -1,7 +1,7 @@
 package com.pisico.backend.infraestructure.`in`.impl
 
 import com.pisico.backend.application.useCases.PropertiesRetriever
-import com.pisico.backend.infraestructure.`in`.PropertyController
+import com.pisico.backend.infraestructure.`in`.controller.PropertyController
 import com.pisico.backend.infraestructure.`in`.dto.PageWrapper
 import com.pisico.backend.infraestructure.`in`.dto.PropertiesResponse
 import com.pisico.backend.infraestructure.`in`.dto.PropertyFiltersRequest

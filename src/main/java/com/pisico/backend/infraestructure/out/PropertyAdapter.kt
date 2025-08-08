@@ -11,6 +11,8 @@ import org.jooq.DSLContext
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.jooq.Condition
+import org.springframework.http.HttpStatus
+import org.springframework.web.server.ResponseStatusException
 import java.math.BigDecimal
 
 @Repository
@@ -26,6 +28,7 @@ open class PropertyAdapter(
 
         val query = dslContext.selectFrom(PROPERTIES)
             .where(whereConditions)
+            .orderBy(PROPERTIES.NAME.desc())
             .limit(10)
             .offset(0)
 
@@ -66,9 +69,9 @@ open class PropertyAdapter(
             filters.country?.let { PROPERTIES.COUNTRY.eq(it) },
 
             buildPricesCondition(filters.minPrice, filters.maxPrice),
-            
+
             buildRoomsCondition(filters.rooms),
-            
+
             filters.roommates?.let { PROPERTIES.ROOMMATES.eq(it) })
     }
 
@@ -93,18 +96,17 @@ open class PropertyAdapter(
         }
     }
 
-    //TODO: Cambiar a ingles y hacer que devuelva 400 no 500. Como se hacia??
     private fun buildPricesCondition(minPrice: BigDecimal?, maxPrice: BigDecimal?): Condition? {
         if (minPrice == null && maxPrice == null) return null
 
+
         if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
-            throw IllegalArgumentException("El precio mínimo no puede ser mayor que el precio máximo.")
+            throw ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Min price must be less than or equal to max price."
+            )
         }
 
-        if (minPrice != null && maxPrice != null && maxPrice < minPrice) {
-            throw IllegalArgumentException("El precio máximo no puede ser menor que el precio mínimo.")
-        }
-        
         val conditions = mutableListOf<Condition>()
 
         if (minPrice != null) {

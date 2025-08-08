@@ -2,6 +2,7 @@ package com.pisico.backend.infraestructure.`in`
 
 import com.pisico.backend.config.AbstractIntegrationTest
 import com.pisico.backend.domain.entities.PropertyType
+import com.pisico.backend.infraestructure.`in`.controller.PropertyController
 import com.pisico.backend.infraestructure.`in`.dto.PropertyFiltersRequest
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
@@ -39,10 +40,10 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             url = "http://localhost:$it/properties"
         }
     }
-    
+
     @ParameterizedTest
     @CsvSource(
-        "Sevilla, apartment, 3",
+        "Sevilla, apartment, 4",
         "Madrid, apartment, 0",
         "Barcelona, house, 0"
     )
@@ -69,7 +70,7 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .get(url)
             .then()
             .statusCode(200)
-            .body("content.size()", equalTo(3))
+            .body("content.size()", equalTo(4))
     }
 
     @Test
@@ -81,7 +82,7 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .get(url)
             .then()
             .statusCode(200)
-            .body("content.size()", equalTo(3))
+            .body("content.size()", equalTo(4))
     }
 
     @Test
@@ -93,7 +94,7 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .get(url)
             .then()
             .statusCode(200)
-            .body("content.size()", equalTo(3))
+            .body("content.size()", equalTo(4))
     }
 
     @Test
@@ -117,7 +118,7 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .get(url)
             .then()
             .statusCode(200)
-            .body("content.size()", equalTo(2))
+            .body("content.size()", equalTo(3))
     }
 
     @Test
@@ -129,7 +130,7 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .get(url)
             .then()
             .statusCode(200)
-            .body("content.size()", equalTo(3))
+            .body("content.size()", equalTo(4))
     }
 
     @Test
@@ -210,14 +211,17 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
     @Test
     fun `should return 400 when propertyType is invalid`() {
         given()
+            .queryParam("city", "Sevilla")
             .queryParam("propertyType", "INVALID_TYPE")
             .`when`()
             .get(url)
             .then()
             .statusCode(400)
+            .body("message", containsString("Failed to convert property value of type 'java.lang.String'" +
+                    " to required type 'com.pisico.backend.domain.entities.PropertyType"))
+
     }
 
-    //TODO: minPrice <= maxPrice
     @Test
     fun `should return 400 when minPrice is greater than maxPrice`() {
         given()
@@ -227,6 +231,19 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .get(url)
             .then()
             .statusCode(400)
+            .body("message", containsString("Min price must be less than or equal to max price."))
+    }
+
+    @Test
+    fun `should return 400 when maxPrice is less than minPrice `() {
+        given()
+            .queryParam("minPrice", 500)
+            .queryParam("maxPrice", 100)
+            .`when`()
+            .get(url)
+            .then()
+            .statusCode(400)
+            .body("message", containsString("Min price must be less than or equal to max price."))
     }
 
     @Test

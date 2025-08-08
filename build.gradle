@@ -42,12 +42,13 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-web',
             'org.postgresql:postgresql:42.6.0',
             'org.springframework.boot:spring-boot-starter-security',
-            'org.springframework.boot:spring-boot-starter-mail',
             'org.springframework.boot:spring-boot-starter-oauth2-client',
-            'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0',
+            'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9',            
             'org.jooq:jooq:3.18.7',
             'org.mapstruct:mapstruct:1.6.3',
-            'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+            'org.jetbrains.kotlin:kotlin-stdlib-jdk8',
+            'org.springframework.boot:spring-boot-starter-mail',
+            'org.springframework.boot:spring-boot-starter-data-redis'
     )
     compileOnly(
             'org.projectlombok:lombok'
@@ -80,9 +81,8 @@ flyway {
     schemas = ['public']
     locations = ['filesystem:src/main/resources/db/migration']
     driver = 'org.postgresql.Driver'
-
+    cleanDisabled = false // Disable clean to prevent accidental data loss
     ignoreMigrationPatterns = ['*:pending']
-    cleanDisabled = true
 }
 
 

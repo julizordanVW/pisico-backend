@@ -1,4 +1,4 @@
-package com.pisico.backend.infraestructure.`in`
+package com.pisico.backend.infraestructure.`in`.controller
 
 import com.pisico.backend.infraestructure.`in`.dto.PageWrapper
 import com.pisico.backend.infraestructure.`in`.dto.PropertiesResponse
@@ -28,9 +28,17 @@ interface PropertyController {
             ApiResponse(
                 responseCode = "400",
                 description = "Not valid request parameters",
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Not valid endpoint",
+            ),
+            ApiResponse(
+                responseCode = "500",
+                description = "Internal server error, something went wrong",
             )
-            //TODO: Add more response codes and descriptions as needed
         ]
+        //TODO: devolveer created 201...
     )
     
     fun getAllProperties(
