@@ -2,12 +2,15 @@ package com.pisico.backend.infraestructure.out
 
 import com.pisico.backend.application.exception.EmailAlreadyVerifiedException
 import com.pisico.backend.application.exception.ExpiredTokenException
+import com.pisico.backend.application.exception.InvalidUserRegistrationException
 import com.pisico.backend.application.exception.UserNotFoundException
 import com.pisico.backend.application.ports.out.UsersRepository
 import com.pisico.backend.domain.entities.User
 import com.pisico.backend.infraestructure.mapper.UserMapper
 import com.pisico.backend.jooq.generated.Tables.USERS
 import org.jooq.DSLContext
+import org.springframework.dao.DataAccessException
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -59,15 +62,21 @@ open class UserAdapter(
             verificationToken = verificationToken,
             tokenExpiryDate = tokenExpiryDate
         )
-
-        dslContext.insertInto(USERS)
-            .set(USERS.NAME, persistenceDto.name)
-            .set(USERS.EMAIL, persistenceDto.email)
-            .set(USERS.PASSWORD_HASH, persistenceDto.passwordHash)
-            .set(USERS.EMAIL_VERIFIED, persistenceDto.emailVerified)
-            .set(USERS.VERIFICATION_TOKEN, persistenceDto.verificationToken)
-            .set(USERS.TOKEN_EXPIRY_DATE, persistenceDto.tokenExpiryDate?.toLocalDateTime())
-            .set(USERS.GENDER, persistenceDto.gender)
-            .execute()
+        
+        try {
+            dslContext.insertInto(USERS)
+                .set(USERS.NAME, persistenceDto.name)
+                .set(USERS.EMAIL, persistenceDto.email)
+                .set(USERS.PASSWORD_HASH, persistenceDto.passwordHash)
+                .set(USERS.EMAIL_VERIFIED, persistenceDto.emailVerified)
+                .set(USERS.VERIFICATION_TOKEN, persistenceDto.verificationToken)
+                .set(USERS.TOKEN_EXPIRY_DATE, persistenceDto.tokenExpiryDate?.toLocalDateTime())
+                .set(USERS.GENDER, persistenceDto.gender)
+                .execute()
+        } catch (_: DuplicateKeyException) {
+            throw InvalidUserRegistrationException("An account with that email already exists.")
+        } catch (e: DataAccessException) {
+            throw IllegalStateException("Failed to save user with email ${persistenceDto.email}.", e)
+        }
     }
 }

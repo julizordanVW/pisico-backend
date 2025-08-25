@@ -2,7 +2,7 @@ package com.pisico.backend.infraestructure.`in`
 
 import com.pisico.backend.config.AbstractIntegrationTest
 import com.pisico.backend.domain.entities.PropertyType
-import com.pisico.backend.infraestructure.`in`.controller.PropertyController
+import com.pisico.backend.infraestructure.`in`.controller.property.PropertyController
 import com.pisico.backend.infraestructure.`in`.dto.PropertyFiltersRequest
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
