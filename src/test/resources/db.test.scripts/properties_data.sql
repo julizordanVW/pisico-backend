@@ -1,5 +1,3 @@
-TRUNCATE TABLE properties RESTART IDENTITY CASCADE;
-
 INSERT INTO properties (id, name, description, type, price, rooms, bathrooms, roommates,
                         furnished, address, city, postal_code, country, latitude, longitude)
 VALUES (gen_random_uuid(), 'Piso Triana Calle Betis',

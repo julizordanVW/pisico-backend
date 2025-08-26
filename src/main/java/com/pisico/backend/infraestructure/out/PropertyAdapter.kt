@@ -7,11 +7,11 @@ import com.pisico.backend.domain.entities.Coordinates
 import com.pisico.backend.domain.entities.Property
 import com.pisico.backend.domain.entities.PropertyType
 import com.pisico.backend.jooq.generated.Tables.PROPERTIES
+import org.jooq.Condition
 import org.jooq.DSLContext
 import org.springframework.data.domain.Pageable
-import org.springframework.stereotype.Repository
-import org.jooq.Condition
 import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Repository
 import org.springframework.web.server.ResponseStatusException
 import java.math.BigDecimal
 
@@ -29,8 +29,11 @@ open class PropertyAdapter(
         val query = dslContext.selectFrom(PROPERTIES)
             .where(whereConditions)
             .orderBy(PROPERTIES.NAME.desc())
-            .limit(10)
-            .offset(0)
+
+        if (pageable.isPaged) {
+            query.limit(pageable.pageSize)
+                .offset(pageable.offset.toInt())
+        }
 
         return query.fetch().map { record ->
             Property(
@@ -57,22 +60,24 @@ open class PropertyAdapter(
     }
 
     override fun countByFilters(filters: PropertyFiltersDto): Long {
-        TODO("Not yet implemented")
+        val whereConditions = getFilters(filters)
+
+        return dslContext.selectCount()
+            .from(PROPERTIES)
+            .where(whereConditions)
+            .fetchOne(0, Long::class.java) ?: 0L
     }
 
     fun getFilters(filters: PropertyFiltersDto): List<Condition> {
         return listOfNotNull(
-            PROPERTIES.CITY.eq(filters.city),
-            PROPERTIES.TYPE.eq(filters.propertyType.value),
-
+            filters.city?.let { PROPERTIES.CITY.eq(it) },
+            filters.propertyType?.let { PROPERTIES.TYPE.eq(it.value) },
             filters.postalCode?.let { PROPERTIES.POSTAL_CODE.eq(it) },
             filters.country?.let { PROPERTIES.COUNTRY.eq(it) },
-
             buildPricesCondition(filters.minPrice, filters.maxPrice),
-
             buildRoomsCondition(filters.rooms),
-
-            filters.roommates?.let { PROPERTIES.ROOMMATES.eq(it) })
+            filters.roommates?.let { PROPERTIES.ROOMMATES.eq(it) }
+        )
     }
 
     private fun buildRoomsCondition(selectedRooms: List<Int>): Condition? {
@@ -99,7 +104,6 @@ open class PropertyAdapter(
     private fun buildPricesCondition(minPrice: BigDecimal?, maxPrice: BigDecimal?): Condition? {
         if (minPrice == null && maxPrice == null) return null
 
-
         if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
             throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
@@ -123,6 +127,4 @@ open class PropertyAdapter(
             else -> conditions.reduce { acc, condition -> acc.and(condition) }
         }
     }
-
-
 }

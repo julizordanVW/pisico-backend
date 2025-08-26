@@ -9,14 +9,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.transaction.annotation.Transactional
 import kotlin.test.Test
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql(statements = ["delete from users where email = 'test@gmail.com'"], executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Transactional
+@Rollback
 open class RegisterControllerIT : AbstractIntegrationTest() {
 
     @Autowired
