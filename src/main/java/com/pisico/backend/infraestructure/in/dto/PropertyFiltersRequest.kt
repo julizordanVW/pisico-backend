@@ -3,6 +3,7 @@ package com.pisico.backend.infraestructure.`in`.dto
 import com.pisico.backend.domain.entities.PropertyType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.math.BigDecimal
+import kotlin.collections.mutableListOf
 
 data class PropertyFiltersRequest(
     @Schema(
@@ -11,6 +12,13 @@ data class PropertyFiltersRequest(
         required = true
     )
     var city: String = "Madrid",
+
+    @Schema(
+        description = "Type of property to filter",
+        allowableValues = ["ROOM", "APARTMENT", "HOUSE", "STUDIO", "PENTHOUSE", "DUPLEX"],
+        required = true
+    )
+    var propertyType: PropertyType = PropertyType.APARTMENT,
 
     @Schema(
         description = "Postal code to filter properties",
@@ -23,13 +31,6 @@ data class PropertyFiltersRequest(
         example = "Spain"
     )
     var country: String? = null,
-
-    @Schema(
-        description = "Type of property to filter",
-        allowableValues = ["ROOM", "APARTMENT", "HOUSE", "STUDIO", "PENTHOUSE", "DUPLEX"],
-        required = true
-    )
-    var propertyType: PropertyType = PropertyType.APARTMENT,
 
     @Schema(
         description = "Minimum price to filter properties",
@@ -46,7 +47,7 @@ data class PropertyFiltersRequest(
         description = "List of number of rooms to filter properties",
         example = "1,2,3"
     )
-    var rooms:  List<Int> = listOf(0),
+    var rooms:  List<Int> = mutableListOf(),
 
     @Schema(
         description = "Number of roommates to filter properties",

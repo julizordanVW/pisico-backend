@@ -1,4 +1,4 @@
-package com.pisico.backend.infraestructure.`in`.dto.user.registry
+package com.pisico.backend.infraestructure.out.dto
 
 import java.time.LocalDate
 import java.time.OffsetDateTime

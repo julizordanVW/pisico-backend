@@ -1,4 +1,4 @@
-package com.pisico.backend.infraestructure.`in`.controller
+package com.pisico.backend.infraestructure.`in`.controller.property
 
 import com.pisico.backend.infraestructure.`in`.dto.PageWrapper
 import com.pisico.backend.infraestructure.`in`.dto.PropertiesResponse
@@ -38,7 +38,6 @@ interface PropertyController {
                 description = "Internal server error, something went wrong",
             )
         ]
-        //TODO: devolveer created 201...
     )
     
     fun getAllProperties(

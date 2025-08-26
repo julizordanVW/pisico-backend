@@ -1,7 +1,7 @@
 package com.pisico.backend.infraestructure.mapper
 
 import com.pisico.backend.domain.entities.User
-import com.pisico.backend.infraestructure.`in`.dto.user.registry.UserPersistenceDto
+import com.pisico.backend.infraestructure.out.dto.UserPersistenceDto
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import java.time.OffsetDateTime

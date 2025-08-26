@@ -1,4 +1,4 @@
-package com.pisico.backend.infraestructure.`in`.dto.user.registry
+package com.pisico.backend.infraestructure.`in`.dto
 
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank

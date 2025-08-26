@@ -2,7 +2,7 @@ package com.pisico.backend.infraestructure.`in`
 
 import com.pisico.backend.config.AbstractIntegrationTest
 import com.pisico.backend.domain.entities.PropertyType
-import com.pisico.backend.infraestructure.`in`.controller.PropertyController
+import com.pisico.backend.infraestructure.`in`.controller.property.PropertyController
 import com.pisico.backend.infraestructure.`in`.dto.PropertyFiltersRequest
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
@@ -13,20 +13,28 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.transaction.annotation.Transactional
 import kotlin.test.Test
 
 @Sql(
     scripts = ["classpath:db.test.scripts/properties_data.sql"],
     executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql(
+    statements = ["delete from properties"],
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+)
 open class PropertyControllerIT : AbstractIntegrationTest() {
 
     @Autowired
     lateinit var propertyController: PropertyController
+
+    @Autowired
+    private lateinit var jdbcTemplate: JdbcTemplate
 
     @LocalServerPort
     var port: Int = 0
@@ -39,6 +47,16 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             RestAssured.port = it
             url = "http://localhost:$it/properties"
         }
+
+        val count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM properties", Int::class.java)
+        println("Properties in database: $count")
+
+        // Imprimir datos de ejemplo para debugging
+        val properties = jdbcTemplate.queryForList(
+            "SELECT name, city, country, type, price, rooms, roommates FROM properties WHERE city = 'Sevilla'"
+        )
+        println("Properties in Sevilla:")
+        properties.forEach { println(it) }
     }
 
     @ParameterizedTest
@@ -53,14 +71,13 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
         expectedCount: Int
     ) {
         val filters = PropertyFiltersRequest(
-            propertyType = PropertyType.valueOf(propertyType.uppercase()),
-            city = city
+            city = city,
+            propertyType = PropertyType.valueOf(propertyType.uppercase())
         )
 
         val result = propertyController.getAllProperties(filters)
         assertThat(result.content).hasSize(expectedCount)
     }
-
 
     @Test
     fun `should return properties filtered by city`() {
@@ -69,6 +86,7 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .`when`()
             .get(url)
             .then()
+            .log().all()
             .statusCode(200)
             .body("content.size()", equalTo(4))
     }
@@ -93,6 +111,7 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .`when`()
             .get(url)
             .then()
+            .log().all()
             .statusCode(200)
             .body("content.size()", equalTo(4))
     }
@@ -185,6 +204,7 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .`when`()
             .get(url)
             .then()
+            .log().all()
             .statusCode(200)
             .body("content.size()", equalTo(1))
             .body("content[0].name", containsString("San Jacinto"))
@@ -219,7 +239,6 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .statusCode(400)
             .body("message", containsString("Failed to convert property value of type 'java.lang.String'" +
                     " to required type 'com.pisico.backend.domain.entities.PropertyType"))
-
     }
 
     @Test
@@ -235,7 +254,7 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `should return 400 when maxPrice is less than minPrice `() {
+    fun `should return 400 when maxPrice is less than minPrice`() {
         given()
             .queryParam("minPrice", 500)
             .queryParam("maxPrice", 100)
@@ -264,5 +283,4 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .then()
             .statusCode(404)
     }
-
 }

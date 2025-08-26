@@ -20,7 +20,10 @@ import kotlin.test.assertEquals
     scripts = ["classpath:db.test.scripts/properties_data.sql"],
     executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
-@SpringBootTest
+@Sql(
+    statements = ["delete from properties"],
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+)
 open class PropertyAdapterIT : AbstractIntegrationTest() {
 
     @Autowired

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
-@RequestMapping("/email/verify")
+@RequestMapping("auth/email/verify")
 interface EmailVerificationController{
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -20,10 +20,6 @@ interface EmailVerificationController{
                 responseCode = "200",
                 description = "Email verified successfully"
             ),
-//            ApiResponse(
-//                responseCode = "400",
-//                description = "Not valid request parameters",
-//            ),
             ApiResponse(
                 responseCode = "404",
                 description = "Not valid endpoint",
@@ -32,7 +28,6 @@ interface EmailVerificationController{
                 responseCode = "500",
                 description = "Internal server error, something went wrong",
             )
-            //TODO: Add more response codes and descriptions as needed
         ]
     )
     fun verifyEmail(

@@ -1,17 +1,18 @@
 package com.pisico.backend.infraestructure.`in`.controller.auth
 
-import com.pisico.backend.infraestructure.`in`.dto.user.registry.RegisterByEmailRequest
+import com.pisico.backend.infraestructure.`in`.dto.RegisterByEmailRequest
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 
-@RequestMapping("/register")
-interface RegisterUserController {
+@RequestMapping("auth/register")
+interface RegisterController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     @Tag(name = "Auth", description = "Endpoints related to authentication management")
@@ -23,7 +24,7 @@ interface RegisterUserController {
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "Not valid request parameters",
+                description = "An account with that email already exists",
             ),
             ApiResponse(
                 responseCode = "403",
@@ -39,9 +40,9 @@ interface RegisterUserController {
             )
         ]
     )
-    
-    
+
+
     fun register(
-        @RequestBody registerByEmailRequest  : RegisterByEmailRequest 
-    )
+        @RequestBody registerByEmailRequest: RegisterByEmailRequest
+    ): ResponseEntity<Map<String, Any>>
 }
