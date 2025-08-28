@@ -4,16 +4,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
-@RequestMapping("auth/email/verify")
-interface EmailVerificationController{
-    @GetMapping
+@RequestMapping("/auth/check-email")
+interface AuthController {
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    @Tag(name = "Auth", description = "Endpoints related to verify user registration")
+    @Tag(name = "Auth", description = "Endpoints related to authentication management")
     @ApiResponses(
         value = [
             ApiResponse(
@@ -30,8 +31,7 @@ interface EmailVerificationController{
             )
         ]
     )
-    fun verifyEmail(
-        @RequestParam("uid") userId: String,
-        @RequestParam("token") token: String
-    )
+    fun checkEmailExists(
+        @RequestParam("email") email: String
+    ): ResponseEntity<Map<String, Any>>
 }

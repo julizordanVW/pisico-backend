@@ -4,7 +4,6 @@ import com.pisico.backend.application.exception.InvalidUserRegistrationException
 import com.pisico.backend.application.useCases.UserRegistrator
 import com.pisico.backend.infraestructure.`in`.controller.auth.RegisterController
 import com.pisico.backend.infraestructure.`in`.dto.RegisterByEmailRequest
-import com.pisico.backend.infraestructure.mapper.UserMapper
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -14,9 +13,9 @@ class RegisterControllerImpl(
     private val userRegistrator: UserRegistrator,
 ) : RegisterController {
 
-    override fun register(registerByEmailRequest: RegisterByEmailRequest): ResponseEntity<Map<String, Any>> {
+    override fun register(request: RegisterByEmailRequest): ResponseEntity<Map<String, Any>> {
         return try {
-            userRegistrator.execute(registerByEmailRequest)
+            userRegistrator.execute(request)
             val response = mapOf<String, Any>("message" to "User registered successfully")
             ResponseEntity.ok(response)
         } catch (e: InvalidUserRegistrationException) {

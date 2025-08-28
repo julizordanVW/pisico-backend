@@ -5,6 +5,7 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 interface UsersRepository {
+    fun findByEmail(email: String): User?
     fun verifyEmail(userId: UUID, token: String)
     fun save(user: User, hashedPassword: String, verificationToken: String, tokenExpiryDate: OffsetDateTime)
 }

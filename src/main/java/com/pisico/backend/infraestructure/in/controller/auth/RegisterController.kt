@@ -43,6 +43,6 @@ interface RegisterController {
 
 
     fun register(
-        @RequestBody registerByEmailRequest: RegisterByEmailRequest
+        @RequestBody request: RegisterByEmailRequest
     ): ResponseEntity<Map<String, Any>>
 }

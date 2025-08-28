@@ -22,6 +22,16 @@ open class UserAdapter(
     private val userMapper: UserMapper
 ) : UsersRepository {
 
+    override fun findByEmail(email: String): User? {
+        val userRecord = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(email))
+            .fetchOne()
+
+        return userRecord?.let {
+            userMapper.toDomain(it)
+        }
+    }
+
     override fun verifyEmail(userId: UUID, token: String) {
         val userRecord = dslContext.selectFrom(USERS)
             .where(USERS.ID.eq(userId))
@@ -60,9 +70,10 @@ open class UserAdapter(
             user = user,
             hashedPassword = hashedPassword,
             verificationToken = verificationToken,
-            tokenExpiryDate = tokenExpiryDate
+            tokenExpiryDate = tokenExpiryDate,
+            emailVerified = true
         )
-        
+
         try {
             dslContext.insertInto(USERS)
                 .set(USERS.NAME, persistenceDto.name)
