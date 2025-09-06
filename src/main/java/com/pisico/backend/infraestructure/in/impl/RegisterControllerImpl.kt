@@ -17,7 +17,7 @@ class RegisterControllerImpl(
         return try {
             userRegistrator.execute(request)
             val response = mapOf<String, Any>("message" to "User registered successfully")
-            ResponseEntity.ok(response)
+            ResponseEntity.status(HttpStatus.CREATED).body(response)
         } catch (e: InvalidUserRegistrationException) {
             val errorResponse = mapOf<String, Any>("message" to (e.message ?: "Invalid user registration data"))
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)

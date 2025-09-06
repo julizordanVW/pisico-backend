@@ -19,16 +19,12 @@ interface RegisterController {
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200",
+                responseCode = "201",
                 description = "User registration successfully"
             ),
             ApiResponse(
                 responseCode = "400",
                 description = "An account with that email already exists",
-            ),
-            ApiResponse(
-                responseCode = "403",
-                description = "Forbidden",
             ),
             ApiResponse(
                 responseCode = "404",

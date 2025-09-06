@@ -10,7 +10,7 @@ class UserEmailChecker(
     private val userRepository: UserRepository,
 ) {
     fun execute(email: String): Boolean {
-        if (!User.isValidEmail(email)) {
+        if (!User.isValidEmail(email.trim())) {
             throw InvalidUserRegistrationException("Invalid email format.")
         }
         return userRepository.findByEmail(email) != null

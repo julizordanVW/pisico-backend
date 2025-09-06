@@ -1,5 +1,6 @@
 package com.pisico.backend.infraestructure.`in`.exception
 
+import com.pisico.backend.application.exception.InvalidUserRegistrationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindException
@@ -42,6 +43,18 @@ class GlobalExceptionHandler {
             message = message
         )
         return ResponseEntity.badRequest().body(response)
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
+    fun handleHttpRequestMethodNotSupportedException(ex: HttpRequestMethodNotSupportedException): ResponseEntity<ErrorResponse> {
+        val errorMessage = "Method not allowed for this endpoint."
+
+        val errorResponse = ErrorResponse(
+            status = HttpStatus.METHOD_NOT_ALLOWED.value(),
+            error = HttpStatus.METHOD_NOT_ALLOWED.reasonPhrase,
+            message = errorMessage
+        )
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(errorResponse)
     }
     
 }

@@ -22,9 +22,21 @@ interface CheckEmailController {
                 description = "Email verified successfully"
             ),
             ApiResponse(
+                responseCode = "400",
+                description = "Bad Request - Invalid input data",
+            ),
+            ApiResponse(
                 responseCode = "404",
                 description = "Not valid endpoint",
             ),
+            ApiResponse(
+                responseCode = "405",
+                description = "Method not Allowed",
+            ),
+//            ApiResponse(
+//                responseCode = "415",
+//                description = "Unsupported Media Type - Invalid content type",
+//            ),
             ApiResponse(
                 responseCode = "500",
                 description = "Internal server error, something went wrong",
