@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
-@RequestMapping("auth/email/verify")
+@RequestMapping("auth/verify")
 interface EmailVerificationController{
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

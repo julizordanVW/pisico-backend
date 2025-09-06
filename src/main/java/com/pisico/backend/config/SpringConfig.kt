@@ -43,9 +43,9 @@ open class SpringConfig {
         return http
             .authorizeHttpRequests { requests ->
                 requests
+                    .requestMatchers("/auth/login/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "auth/register/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "auth/check-email/**").permitAll() // Ruta corregida
-                    .requestMatchers(HttpMethod.POST, "auth/login").permitAll()
                     .requestMatchers(
                         "/", "/index.html", "/error", "/webjars/**",
                         "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",

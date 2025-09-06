@@ -1,16 +1,16 @@
 package com.pisico.backend.infraestructure.`in`.impl
 
-import com.pisico.backend.application.useCases.UserAuthenticator
-import com.pisico.backend.infraestructure.`in`.controller.auth.AuthController
+import com.pisico.backend.application.useCases.UserEmailChecker
+import com.pisico.backend.infraestructure.`in`.controller.auth.CheckEmailController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class AuthControllerImpl(
-    private val authenticator: UserAuthenticator,
-) : AuthController {
+class CheckEmailControllerImpl(
+    private val authenticator: UserEmailChecker,
+) : CheckEmailController {
     override fun checkEmailExists(@RequestParam("email") email: String): ResponseEntity<Map<String, Any>> {
         return try {
             val exists = authenticator.execute(email)

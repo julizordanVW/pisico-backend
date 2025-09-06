@@ -1,6 +1,7 @@
 package com.pisico.backend.domain.entities
 
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.util.UUID
 import java.util.regex.Pattern
 
@@ -12,8 +13,8 @@ data class User(
     val email: String?,
     val password: String,
     val emailVerified: Boolean = false,
-    val verification_token: String? = null,
-    val token_expiry_date: LocalDate? = null,
+    val verificationToken: String? = null,
+    val tokenExpiryDate: OffsetDateTime? = null,
     val phoneNumber: String?,
     val profilePictureUrl: String?,
     val gender: Gender,

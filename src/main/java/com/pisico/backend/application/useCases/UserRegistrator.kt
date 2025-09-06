@@ -1,18 +1,19 @@
 package com.pisico.backend.application.useCases
 
 import com.pisico.backend.application.exception.InvalidUserRegistrationException
-import com.pisico.backend.application.ports.out.UsersRepository
+import com.pisico.backend.application.ports.out.UserRepository
 import com.pisico.backend.domain.entities.User
 import com.pisico.backend.domain.entities.User.Gender
 import com.pisico.backend.infraestructure.`in`.dto.RegisterByEmailRequest
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
 @Service
 class UserRegistrator(
-    private val usersRepository: UsersRepository,
+    private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder
 ) {
     fun execute(request: RegisterByEmailRequest) {
@@ -31,8 +32,8 @@ class UserRegistrator(
             email = request.email,
             password = hashedPassword,
             emailVerified = false,
-            verification_token = verificationToken,
-            token_expiry_date = tokenExpiryDate.toLocalDate(),
+            verificationToken = verificationToken,
+            tokenExpiryDate = tokenExpiryDate,
             phoneNumber = null,
             profilePictureUrl = null,
             gender = Gender.NOT_SPECIFIED,
@@ -41,7 +42,7 @@ class UserRegistrator(
             timeZone = null
         )
 
-        usersRepository.save(user, hashedPassword, verificationToken, tokenExpiryDate)
+        userRepository.save(user, hashedPassword, verificationToken, tokenExpiryDate)
     }
 
     fun validate(request: RegisterByEmailRequest) {

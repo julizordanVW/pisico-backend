@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
 @RequestMapping("/auth/check-email")
-interface AuthController {
+interface CheckEmailController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     @Tag(name = "Auth", description = "Endpoints related to authentication management")

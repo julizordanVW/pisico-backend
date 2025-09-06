@@ -8,9 +8,9 @@ data class LoginByEmailRequest(
 
     @field:NotBlank
     @field:Email
-    private var email: String,
+    var email: String,
 
     @field:NotBlank
     @field:Size(min = 8)
-    private var password: String,
+    var password: String,
 )
