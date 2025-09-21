@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>{{titulo}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Manrope', Arial, sans-serif;
+            background-color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .email-wrapper {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px 20px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            max-width: 120px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+
+        .title {
+            color: #005F68;
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            margin: 0 0 30px 0;
+            line-height: 1.2;
+        }
+
+        .divider {
+            width: 100%;
+            max-width: 400px;
+            height: 2px;
+            background-color: #91999F;
+            margin: 0 auto 30px auto;
+        }
+
+        .description {
+            color: #5C5C5C;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            margin: 0 0 40px 0;
+            line-height: 1.4;
+        }
+
+        .cta-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #005F68;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            font-family: 'Manrope', Arial, sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #004a52;
+        }
+
+        .alternative-link {
+            color: #5C5C5C;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            margin: 30px 0;
+            line-height: 1.4;
+        }
+
+        .alternative-link a {
+            color: #005F68;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .support-text {
+            color: #5C5C5C;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            margin: 30px 0;
+            line-height: 1.5;
+        }
+
+        .support-text a {
+            color: #005F68;
+            text-decoration: none;
+        }
+
+        .support-text a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #91999F;
+        }
+
+        .social-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand-name {
+            color: #005F68;
+            font-size: 36px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .social-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .social-label {
+            color: #5C5C5C;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            transition: opacity 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            opacity: 0.7;
+        }
+
+        .footer-text {
+            color: #5C5C5C;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Mobile responsiveness */
+        @media screen and (max-width: 600px) {
+            .email-wrapper {
+                padding: 10px;
+            }
+
+            .email-container {
+                padding: 20px 15px;
+            }
+
+            .logo {
+                max-width: 100px;
+            }
+
+            .title {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .description {
+                font-size: 16px;
+                margin-bottom: 30px;
+            }
+
+            .cta-button {
+                width: 100%;
+                max-width: 280px;
+                padding: 18px 20px;
+                font-size: 16px;
+            }
+
+            .alternative-link {
+                font-size: 14px;
+                margin: 25px 0;
+            }
+
+            .support-text {
+                font-size: 14px;
+                margin: 25px 0;
+            }
+
+            .social-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .brand-name {
+                font-size: 28px;
+            }
+
+            .social-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .footer-text {
+                font-size: 11px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .title {
+                font-size: 20px;
+            }
+
+            .description {
+                font-size: 15px;
+            }
+
+            .cta-button {
+                font-size: 15px;
+                padding: 16px 18px;
+            }
+
+            .brand-name {
+                font-size: 24px;
+            }
+        }
+
+        /* Email client specific fixes */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            .cta-button {
+                -webkit-appearance: none;
+            }
+        }
+
+        /* Outlook fixes */
+        <!--[if mso]>
+        <style>
+            .email-container {
+                width: 600px !important;
+            }
+        </style>
+        <![endif]-->
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <!-- Logo and Title Section -->
+            <div class="logo-container">
+                <img src="{{logo_url}}" alt="Pisico" class="logo" />
+                <h1 class="title">Verifica tu Correo<br>Electrónico en Pisico</h1>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Description -->
+            <p class="description">
+                Gracias por registrarte en Pisico.<br>
+                Verifica tu correo electrónico para continuar y proteger tu cuenta.
+            </p>
+
+            <!-- CTA Button -->
+            <div class="cta-container">
+                <a href="{{cta_url}}" class="cta-button">VERIFICAR AHORA</a>
+            </div>
+
+            <!-- Alternative Link -->
+            <p class="alternative-link">
+                Si el botón no funciona, copia y pega este enlace en tu navegador:<br>
+                <a href="{{cta_url}}">{{cta_url}}</a>
+            </p>
+
+            <div class="divider"></div>
+
+            <!-- Support Text -->
+            <p class="support-text">
+                Si no eres tú, <a href="#">haz clic aquí</a>.<br><br>
+                Si tienes alguna pregunta, contacta con nuestro equipo de soporte en
+                <a href="mailto:info@pisico.es">info@pisico.es</a><br>
+                o visita nuestra <a href="#">página de ayuda</a>.<br><br>
+                <a href="#">Política de Privacidad</a> | <a href="#">Términos de uso</a>
+            </p>
+
+            <!-- Footer Section -->
+            <div class="footer-section">
+                <div class="social-container">
+                    <h2 class="brand-name">Pisico</h2>
+                    <div class="social-section">
+                        <p class="social-label">Síguenos</p>
+                        <div class="social-icons">
+                            <a href="#" aria-label="Instagram">
+                                <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_154_209)">
+                                        <path d="M16.5 2.97275C20.9055 2.97275 21.428 2.98925 23.1674 3.069C24.9659 3.1515 26.818 3.56125 28.1284 4.87162C29.4511 6.19438 29.8485 8.02862 29.931 9.83263C30.0107 11.572 30.0272 12.0945 30.0272 16.5C30.0272 20.9055 30.0107 21.428 29.931 23.1674C29.8499 24.9563 29.4305 26.8263 28.1284 28.1284C26.8056 29.4511 24.9728 29.8485 23.1674 29.931C21.428 30.0107 20.9055 30.0272 16.5 30.0272C12.0945 30.0272 11.572 30.0107 9.83263 29.931C8.0575 29.8499 6.16275 29.4209 4.87162 28.1284C3.55575 26.8125 3.1515 24.9604 3.069 23.1674C2.98925 21.428 2.97275 20.9055 2.97275 16.5C2.97275 12.0945 2.98925 11.572 3.069 9.83263C3.15013 8.05062 3.57363 6.16962 4.87162 4.87162C6.19163 3.55163 8.03275 3.1515 9.83263 3.069C11.572 2.98925 12.0945 2.97275 16.5 2.97275ZM16.5 0C12.0189 0 11.4565 0.01925 9.6965 0.099C7.14587 0.215875 4.61312 0.925375 2.76925 2.76925C0.9185 4.62 0.215875 7.14725 0.099 9.6965C0.01925 11.4565 0 12.0189 0 16.5C0 20.9811 0.01925 21.5435 0.099 23.3035C0.215875 25.8514 0.928125 28.391 2.76925 30.2308C4.61863 32.0801 7.15 32.7841 9.6965 32.901C11.4565 32.9808 12.0189 33 16.5 33C20.9811 33 21.5435 32.9808 23.3035 32.901C25.8528 32.7841 28.3883 32.0732 30.2308 30.2308C32.0829 28.3786 32.7841 25.8528 32.901 23.3035C32.9808 21.5435 33 20.9811 33 16.5C33 12.0189 32.9808 11.4565 32.901 9.6965C32.7841 7.14587 32.0732 4.61175 30.2308 2.76925C28.3841 0.922625 25.8459 0.2145 23.3035 0.099C21.5435 0.01925 20.9811 0 16.5 0Z" fill="#005F68"/>
+                                        <path d="M16.5001 8.02734C11.821 8.02734 8.02734 11.821 8.02734 16.5001C8.02734 21.1792 11.821 24.9728 16.5001 24.9728C21.1792 24.9728 24.9728 21.1792 24.9728 16.5001C24.9728 11.821 21.1792 8.02734 16.5001 8.02734ZM16.5001 22.0001C13.4627 22.0001 11.0001 19.5375 11.0001 16.5001C11.0001 13.4627 13.4627 11.0001 16.5001 11.0001C19.5375 11.0001 22.0001 13.4627 22.0001 16.5001C22.0001 19.5375 19.5375 22.0001 16.5001 22.0001Z" fill="#005F68"/>
+                                        <path d="M25.3084 9.67167C26.4019 9.67167 27.2884 8.78519 27.2884 7.69167C27.2884 6.59815 26.4019 5.71167 25.3084 5.71167C24.2148 5.71167 23.3284 6.59815 23.3284 7.69167C23.3284 8.78519 24.2148 9.67167 25.3084 9.67167Z" fill="#005F68"/>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_154_209">
+                                            <rect width="33" height="33" fill="white"/>
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </a>
+                            <a href="#" aria-label="Twitter">
+                                <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M25.9875 1.58545H31.0503L19.9925 14.2203L33 31.4161H22.8181L14.8376 20.9895L5.71588 31.4161H0.644875L12.4699 17.8984L0 1.58545H10.4404L17.6467 11.1156L25.9875 1.58545ZM24.2096 28.3897H27.0133L8.91275 4.4537H5.9015L24.2096 28.3897Z" fill="#005F68"/>
+                                </svg>
+                            </a>
+                            <a href="#" aria-label="Facebook">
+                                <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_154_216)">
+                                        <path d="M33 16.6003C33 24.8352 26.9583 31.6621 19.0712 32.901V21.4018H22.9061L23.6363 16.6443H19.0712V13.5575C19.0712 12.2553 19.7092 10.9876 21.7525 10.9876H23.8274V6.93684C23.8274 6.93684 21.9436 6.61509 20.1437 6.61509C16.3845 6.61509 13.9288 8.89347 13.9288 13.0171V16.643H9.75012V21.4005H13.9288V32.8996C6.04313 31.6593 0 24.8338 0 16.6003C0 7.48822 7.38788 0.100342 16.5 0.100342C25.6121 0.100342 33 7.48684 33 16.6003Z" fill="#005F68"/>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_154_216">
+                                            <rect width="33" height="33" fill="white"/>
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </a>
+                            <a href="#" aria-label="YouTube">
+                                <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M32.3097 8.50573C31.9302 7.07711 30.8124 5.95098 29.392 5.56873C26.8194 4.87573 16.5 4.87573 16.5 4.87573C16.5 4.87573 6.18062 4.87573 3.60662 5.56873C2.18762 5.95098 1.06975 7.07573 0.69025 8.50573C0 11.0962 0 16.5 0 16.5C0 16.5 0 21.9037 0.69025 24.4942C1.06975 25.9229 2.18763 27.049 3.608 27.4312C6.18062 28.1242 16.5 28.1242 16.5 28.1242C16.5 28.1242 26.8194 28.1242 29.3934 27.4312C30.8124 27.049 31.9303 25.9242 32.3111 24.4942C33 21.9037 33 16.5 33 16.5C33 16.5 33 11.0962 32.3097 8.50573ZM13.1257 21.4074V11.5926L21.7498 16.5L13.1257 21.4074Z" fill="#005F68"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Text -->
+                <p class="footer-text">
+                    Este correo electrónico ha sido enviado por Pisico.<br>
+                    Pisico · Avenida Santa Cecilia 41010 · ©2025<br><br>
+                    Nota de seguridad: Pisico nunca te pedirá tu contraseña por email. Desconfía de cualquier solicitud de información sensible.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

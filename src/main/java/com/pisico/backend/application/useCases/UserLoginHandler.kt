@@ -14,6 +14,10 @@ class UserLoginHandler(
     fun execute(request: LoginByEmailRequest) {
         val user = userRepository.findByEmail(request.email)
             ?: throw InvalidCredentialsException("Invalid email or password.")
+        
+        if (user.emailVerified == false) {
+            throw InvalidCredentialsException("Email not verified.")
+        }
 
         if (!passwordEncoder.matches(request.password, user.passwordHash)) {
             throw InvalidCredentialsException("Invalid email or password.")

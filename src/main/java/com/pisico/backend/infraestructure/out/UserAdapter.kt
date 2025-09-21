@@ -1,22 +1,20 @@
 package com.pisico.backend.infraestructure.out
 
-import com.pisico.backend.application.exception.EmailAlreadyVerifiedException
-import com.pisico.backend.application.exception.ExpiredTokenException
+import com.pisico.backend.application.exception.InvalidTokenException
 import com.pisico.backend.application.exception.InvalidUserRegistrationException
 import com.pisico.backend.application.exception.UserNotFoundException
 import com.pisico.backend.application.ports.out.UserRepository
 import com.pisico.backend.domain.entities.User
 import com.pisico.backend.infraestructure.mapper.UserMapper
+import com.pisico.backend.domain.entities.UserVerification
 import com.pisico.backend.jooq.generated.Tables.USERS
 import com.pisico.backend.jooq.generated.tables.records.UsersRecord
 import org.jooq.DSLContext
 import org.springframework.dao.DataAccessException
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Repository
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import java.util.UUID
 
 @Repository
 open class UserAdapter(
@@ -30,32 +28,40 @@ open class UserAdapter(
             .fetchOne()
     }
 
-    override fun verifyEmail(userId: UUID, token: String) {
+    override fun verifyToken(token: String) : UserVerification {
         val userRecord = dslContext.selectFrom(USERS)
-            .where(USERS.ID.eq(userId))
-            .fetchOne()
+            .where(USERS.VERIFICATION_TOKEN.eq(token))
+            .fetchOne() ?: throw UserNotFoundException("User not found")
 
-        if (userRecord == null) throw UserNotFoundException("User with ID $userId not found for email verification.")
-
-        if (userRecord.get(USERS.EMAIL_VERIFIED))
-            throw EmailAlreadyVerifiedException("Email for user ID $userId is already verified. No action needed.")
-
-
-        if (userRecord.get(USERS.VERIFICATION_TOKEN) != token)
-            throw IllegalArgumentException("Invalid verification token for user ID $userId.")
-
-        val expirationDate = userRecord.get(USERS.TOKEN_EXPIRY_DATE)
-
-        if (expirationDate == null || expirationDate.isBefore(LocalDateTime.now())) {
-            throw ExpiredTokenException("Verification token for user ID $userId has expired.")
+        if (userRecord.tokenExpiryDate.isBefore(LocalDateTime.now())) {
+            throw InvalidTokenException("Token expired")
         }
 
-        dslContext.update(USERS)
-            .set(USERS.EMAIL_VERIFIED, true)
-            .set(USERS.VERIFICATION_TOKEN, null as String?)
-            .set(USERS.TOKEN_EXPIRY_DATE, null as LocalDateTime?)
-            .where(USERS.ID.eq(userId))
-            .execute()
+        if (userRecord.emailVerified) {
+            throw InvalidTokenException("Email already verified")
+        }
+
+        try {
+            val rowsAffected = dslContext.update(USERS)
+                .set(USERS.EMAIL_VERIFIED, true)
+                .set(USERS.VERIFICATION_TOKEN, null as String?)
+                .set(USERS.TOKEN_EXPIRY_DATE, null as LocalDateTime?)
+                .set(USERS.ROW_UPDATED_ON, LocalDateTime.now())
+                .where(USERS.ID.eq(userRecord.id))
+                .execute()
+
+            if (rowsAffected == 0) {
+                throw IllegalStateException("No user found with id ${userRecord.id}")
+            }
+
+            return UserVerification(
+                email = userRecord.email,
+                emailVerified = true
+            )
+
+        } catch (e: DataAccessException) {
+            throw IllegalStateException("Failed to verify token for user ${userRecord.id}.", e)
+        }
     }
 
     override fun save(
@@ -90,7 +96,7 @@ open class UserAdapter(
         }
     }
 
-    override fun updateUser(email: String) {
+    override fun updateUserByEmail(email: String) {
         try {
             dslContext.update(USERS)
                 .set(USERS.ROW_UPDATED_ON, OffsetDateTime.now().toLocalDateTime())
@@ -99,6 +105,37 @@ open class UserAdapter(
         } catch (e: DataAccessException) {
             throw IllegalStateException("Failed to update user with email $email.", e)
         }
+    }
 
+    fun updateUser(user: User): User {
+        try {
+            val rowsAffected = dslContext.update(USERS)
+                .set(USERS.NAME, user.name)
+                .set(USERS.DESCRIPTION, user.description)
+                .set(USERS.DATE_OF_BIRTH, user.dateOfBirth)
+                .set(USERS.EMAIL, user.email)
+                .set(USERS.PASSWORD_HASH, user.password)
+                .set(USERS.EMAIL_VERIFIED, user.emailVerified)
+                .set(USERS.VERIFICATION_TOKEN, user.verificationToken)
+                .set(USERS.TOKEN_EXPIRY_DATE, user.tokenExpiryDate?.toLocalDateTime())
+                .set(USERS.PHONE_NUMBER, user.phoneNumber)
+                .set(USERS.PROFILE_PICTURE_URL, user.profilePictureUrl)
+                .set(USERS.GENDER, user.gender.name)
+                .set(USERS.ROLE, user.role)
+                .set(USERS.ACCOUNT_STATUS, user.accountStatus)
+                .set(USERS.TIME_ZONE, user.timeZone)
+                .set(USERS.ROW_UPDATED_ON, LocalDateTime.now())
+                .where(USERS.ID.eq(user.id))
+                .execute()
+
+            if (rowsAffected == 0) {
+                throw IllegalStateException("No user found with id ${user.id}")
+            }
+
+            return user.copy()
+
+        } catch (e: DataAccessException) {
+            throw IllegalStateException("Failed to update user with id ${user.id}.", e)
+        }
     }
 }

@@ -61,7 +61,6 @@ class RegisterControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(201)
             .body("message", Matchers.equalTo("User registered successfully"))
     }
@@ -85,7 +84,6 @@ class RegisterControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(400)
             .body("message", Matchers.equalTo("An account with that email already exists."))
     }
@@ -105,7 +103,6 @@ class RegisterControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(400)
             .body("message", Matchers.equalTo("Invalid email format."))
     }
@@ -125,7 +122,6 @@ class RegisterControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(400)
             .body("message", Matchers.equalTo("Password must be at least 8 characters long, contain uppercase and lowercase letters, a digit, and a special character."))
     }
@@ -147,7 +143,6 @@ class RegisterControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post("http://localhost:$port/auth/register/nonexistent")
             .then()
-            .log().all()
             .statusCode(404)
     }
 
@@ -158,7 +153,6 @@ class RegisterControllerIT : AbstractIntegrationTest() {
             .`when`()
             .get(url)
             .then()
-            .log().all()
             .statusCode(405)
     }
 
@@ -172,7 +166,6 @@ class RegisterControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(415)
     }
 
@@ -186,7 +179,6 @@ class RegisterControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(400)
     }
 
@@ -204,7 +196,6 @@ class RegisterControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(400)
     }
 
@@ -222,7 +213,6 @@ class RegisterControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(400)
     }
 }

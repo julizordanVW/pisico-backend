@@ -1,6 +1,7 @@
 package com.pisico.backend.application.useCases
 
 import com.pisico.backend.application.exception.InvalidUserRegistrationException
+import com.pisico.backend.application.ports.out.EmailSenderPort
 import com.pisico.backend.application.ports.out.UserRepository
 import com.pisico.backend.domain.entities.User
 import com.pisico.backend.domain.entities.User.Gender
@@ -14,6 +15,7 @@ import java.util.UUID
 @Service
 class UserRegistrator(
     private val userRepository: UserRepository,
+    private val emailSender: EmailSenderPort,
     private val passwordEncoder: PasswordEncoder
 ) {
     fun execute(request: RegisterByEmailRequest) {
@@ -22,7 +24,7 @@ class UserRegistrator(
         val hashedPassword = passwordEncoder.encode(request.password)
 
         val verificationToken = UUID.randomUUID().toString()
-        val tokenExpiryDate = OffsetDateTime.now().plusMinutes(5)
+        val tokenExpiryDate = OffsetDateTime.now().plusMinutes(20)
 
         val user = User(
             id = null,
@@ -43,15 +45,16 @@ class UserRegistrator(
         )
 
         userRepository.save(user, hashedPassword, verificationToken, tokenExpiryDate)
+        emailSender.sendVerificationEmail(request.email, verificationToken)
     }
 
     fun validate(request: RegisterByEmailRequest) {
         if (!User.isValidEmail(request.email)) {
             throw InvalidUserRegistrationException("Invalid email format.")
         }
-        if (request.firstName.isEmpty()){
+        if (request.firstName.isEmpty()) {
             throw InvalidUserRegistrationException("First name cannot be empty.")
-        } 
+        }
         if (request.lastName.isEmpty()) {
             throw InvalidUserRegistrationException("Last name cannot be empty.")
         }

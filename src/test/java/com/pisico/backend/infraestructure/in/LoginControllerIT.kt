@@ -52,7 +52,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(200)
             .body("message", Matchers.equalTo("Login successful."))
     }
@@ -70,7 +69,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(200)
             .body("message", Matchers.equalTo("Login successful."))
     }
@@ -88,7 +86,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(200)
             .body("message", Matchers.equalTo("Login successful."))
     }
@@ -108,7 +105,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -126,7 +122,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -144,7 +139,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -162,7 +156,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -181,7 +174,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(400)
     }
 
@@ -197,7 +189,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(400)
     }
 
@@ -209,7 +200,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(400)
     }
 
@@ -228,7 +218,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -246,7 +235,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -264,7 +252,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -282,7 +269,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -302,7 +288,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(200)
             .body("message", Matchers.equalTo("Login successful."))
     }
@@ -369,7 +354,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -388,7 +372,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -407,7 +390,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -427,7 +409,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -445,7 +426,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -465,7 +445,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(401)
             .body("message", Matchers.equalTo("Invalid email or password."))
     }
@@ -477,7 +456,6 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .log().all()
             .statusCode(400)
     }
 }

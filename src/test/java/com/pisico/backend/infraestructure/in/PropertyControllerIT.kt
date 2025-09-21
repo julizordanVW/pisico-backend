@@ -86,7 +86,6 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .`when`()
             .get(url)
             .then()
-            .log().all()
             .statusCode(200)
             .body("content.size()", equalTo(4))
     }
@@ -111,7 +110,6 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .`when`()
             .get(url)
             .then()
-            .log().all()
             .statusCode(200)
             .body("content.size()", equalTo(4))
     }
@@ -204,7 +202,6 @@ open class PropertyControllerIT : AbstractIntegrationTest() {
             .`when`()
             .get(url)
             .then()
-            .log().all()
             .statusCode(200)
             .body("content.size()", equalTo(1))
             .body("content[0].name", containsString("San Jacinto"))

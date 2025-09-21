@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import java.util.*
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
@@ -224,7 +223,7 @@ open class UserAdapterIT : AbstractIntegrationTest() {
         val userId = savedUser.get(USERS.ID)
 
         // When
-        userAdapter.verifyEmail(userId, verificationToken)
+        userAdapter.verifyToken(savedUser.email, verificationToken)
 
         // Then
         val verifiedUser = dslContext.selectFrom(USERS)
@@ -239,11 +238,11 @@ open class UserAdapterIT : AbstractIntegrationTest() {
     @Test
     fun `should throw UserNotFoundException when verifying email for non-existent user`() {
         // Given
-        val nonExistentUserId = UUID.randomUUID()
+        val nonExistentUser = "nouser@gmail.com"
 
         // When & Then
         assertFailsWith<UserNotFoundException> {
-            userAdapter.verifyEmail(nonExistentUserId, "any-token")
+            userAdapter.verifyToken(nonExistentUser, "any-token")
         }
     }
 
@@ -256,12 +255,12 @@ open class UserAdapterIT : AbstractIntegrationTest() {
             .where(USERS.EMAIL.eq(testUser.email))
             .fetchOne()!!
 
-        val userId = savedUser.get(USERS.ID)
-        userAdapter.verifyEmail(userId, verificationToken)
+        val userEmail = savedUser.get(USERS.EMAIL)
+        userAdapter.verifyToken(userEmail, verificationToken)
 
         // When & Then
         assertFailsWith<EmailAlreadyVerifiedException> {
-            userAdapter.verifyEmail(userId, verificationToken)
+            userAdapter.verifyToken(userEmail, verificationToken)
         }
     }
 
@@ -274,11 +273,11 @@ open class UserAdapterIT : AbstractIntegrationTest() {
             .where(USERS.EMAIL.eq(testUser.email))
             .fetchOne()!!
 
-        val userId = savedUser.get(USERS.ID)
+        val userEmail = savedUser.get(USERS.EMAIL)
 
         // When & Then
         assertFailsWith<InvalidDataAccessApiUsageException> {
-            userAdapter.verifyEmail(userId, "invalid-token")
+            userAdapter.verifyToken(userEmail, "invalid-token")
         }
     }
 
@@ -292,11 +291,11 @@ open class UserAdapterIT : AbstractIntegrationTest() {
             .where(USERS.EMAIL.eq(testUser.email))
             .fetchOne()!!
 
-        val userId = savedUser.get(USERS.ID)
+        val userEmail = savedUser.get(USERS.EMAIL)
 
         // When & Then
         assertFailsWith<ExpiredTokenException> {
-            userAdapter.verifyEmail(userId, verificationToken)
+            userAdapter.verifyToken(userEmail, verificationToken)
         }
     }
 
@@ -309,17 +308,17 @@ open class UserAdapterIT : AbstractIntegrationTest() {
             .where(USERS.EMAIL.eq(testUser.email))
             .fetchOne()!!
 
-        val userId = savedUser.get(USERS.ID)
+        val userEmail = savedUser.get(USERS.EMAIL)
 
         // Manually set token expiry to null to simulate edge case
         dslContext.update(USERS)
             .set(USERS.TOKEN_EXPIRY_DATE, null as LocalDateTime?)
-            .where(USERS.ID.eq(userId))
+            .where(USERS.EMAIL.eq(userEmail))
             .execute()
 
         // When & Then
         assertFailsWith<ExpiredTokenException> {
-            userAdapter.verifyEmail(userId, verificationToken)
+            userAdapter.verifyToken(userEmail, verificationToken)
         }
     }
 
@@ -332,14 +331,14 @@ open class UserAdapterIT : AbstractIntegrationTest() {
             .where(USERS.EMAIL.eq(testUser.email))
             .fetchOne()!!
 
-        val userId = savedUser.get(USERS.ID)
+        val userEmail = savedUser.get(USERS.EMAIL)
 
         // When - First verification succeeds
-        userAdapter.verifyEmail(userId, verificationToken)
+        userAdapter.verifyToken(userEmail, verificationToken)
 
         // Then - Second verification should throw EmailAlreadyVerifiedException
         assertFailsWith<EmailAlreadyVerifiedException> {
-            userAdapter.verifyEmail(userId, verificationToken)
+            userAdapter.verifyToken(userEmail, verificationToken)
         }
     }
 
@@ -352,17 +351,17 @@ open class UserAdapterIT : AbstractIntegrationTest() {
             .where(USERS.EMAIL.eq(testUser.email))
             .fetchOne()!!
 
-        val userId = savedUser.get(USERS.ID)
+        val userEmail = savedUser.get(USERS.EMAIL)
         val originalName = savedUser.get(USERS.NAME)
         val originalEmail = savedUser.get(USERS.EMAIL)
         val originalPasswordHash = savedUser.get(USERS.PASSWORD_HASH)
 
         // When
-        userAdapter.verifyEmail(userId, verificationToken)
+        userAdapter.verifyToken(userEmail, verificationToken)
 
         // Then - All other data should remain unchanged
         val verifiedUser = dslContext.selectFrom(USERS)
-            .where(USERS.ID.eq(userId))
+            .where(USERS.EMAIL.eq(userEmail))
             .fetchOne()!!
 
         assertThat(verifiedUser.get(USERS.NAME)).isEqualTo(originalName)
@@ -381,14 +380,14 @@ open class UserAdapterIT : AbstractIntegrationTest() {
             .where(USERS.EMAIL.eq(testUser.email))
             .fetchOne()!!
 
-        val userId = savedUser.get(USERS.ID)
+        val userEmail = savedUser.get(USERS.EMAIL)
 
         // When
-        userAdapter.verifyEmail(userId, specialToken)
+        userAdapter.verifyToken(userEmail, specialToken)
 
         // Then
         val verifiedUser = dslContext.selectFrom(USERS)
-            .where(USERS.ID.eq(userId))
+            .where(USERS.EMAIL.eq(userEmail))
             .fetchOne()!!
 
         assertTrue(verifiedUser.get(USERS.EMAIL_VERIFIED))
@@ -411,7 +410,7 @@ open class UserAdapterIT : AbstractIntegrationTest() {
         Thread.sleep(1)
 
         // When
-        userAdapter.updateUser(testUser.email!!)
+        userAdapter.updateUserByEmail(testUser.email!!)
 
         // Then
         val updatedUser = dslContext.selectFrom(USERS)
@@ -431,7 +430,7 @@ open class UserAdapterIT : AbstractIntegrationTest() {
         val nonExistentEmail = "non-existent@example.com"
 
         // When & Then - Should not throw exception, just update 0 rows
-        userAdapter.updateUser(nonExistentEmail)
+        userAdapter.updateUserByEmail(nonExistentEmail)
 
         // Verify no users were created
         val userCount = dslContext.selectCount()
@@ -452,8 +451,8 @@ open class UserAdapterIT : AbstractIntegrationTest() {
         userAdapter.save(user2, hashedPassword, verificationToken, tokenExpiryDate)
 
         // When
-        userAdapter.updateUser(user1.email!!)
-        userAdapter.updateUser(user2.email!!)
+        userAdapter.updateUserByEmail(user1.email!!)
+        userAdapter.updateUserByEmail(user2.email!!)
 
         // Then
         val updatedUser1 = dslContext.selectFrom(USERS)
@@ -516,11 +515,11 @@ open class UserAdapterIT : AbstractIntegrationTest() {
             .where(USERS.EMAIL.eq(testUser.email))
             .fetchOne()!!
 
-        val userId = savedUser.get(USERS.ID)
+        val userEmail = savedUser.get(USERS.EMAIL)
 
         // When & Then - This should likely fail due to exact timing
         assertFailsWith<ExpiredTokenException> {
-            userAdapter.verifyEmail(userId, verificationToken)
+            userAdapter.verifyToken(userEmail, verificationToken)
         }
     }
 
@@ -547,13 +546,13 @@ open class UserAdapterIT : AbstractIntegrationTest() {
             .where(USERS.EMAIL.eq(testUser.email))
             .fetchOne()!!
 
-        val userId = savedUser.get(USERS.ID)
+        val userEmail = savedUser.get(USERS.EMAIL)
 
         // When & Then
-        userAdapter.verifyEmail(userId, emptyToken)
+        userAdapter.verifyToken(userEmail, emptyToken)
 
         val verifiedUser = dslContext.selectFrom(USERS)
-            .where(USERS.ID.eq(userId))
+            .where(USERS.EMAIL.eq(userEmail))
             .fetchOne()!!
 
         assertTrue(verifiedUser.get(USERS.EMAIL_VERIFIED))

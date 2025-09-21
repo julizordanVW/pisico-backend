@@ -46,8 +46,9 @@ open class SpringConfig {
                     .requestMatchers("/auth/login/**").permitAll()
                     .requestMatchers("/auth/register/**").permitAll()
                     .requestMatchers("/auth/check-email/**").permitAll()
+                    .requestMatchers("/auth/verify/**").permitAll()
                     .requestMatchers(
-                        "/", "/index.html", "/error", "/webjars/**",
+                        "/", "/static/**", "/logo.png","/index.html", "/error", "/webjars/**",
                         "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
                         "/properties/**"
                     ).permitAll()
