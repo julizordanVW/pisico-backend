@@ -99,6 +99,46 @@ INSERT INTO users (
           NOW()
       ),
       (
+          '550e8400-e29b-41d4-a716-446655440013',
+          'Unverified User',
+          'Unverified test account',
+          '1995-03-25',
+          'unverified@example.com',
+          '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- password: password
+          false,
+          'verification-token-1234',
+          NOW() - INTERVAL '1 day',
+          '+5566778899',
+          NULL,
+          'female',
+          'user',
+          NULL,
+          'UTC',
+          'active',
+          NOW(),
+          NOW()
+      ),
+      (
+          '550e8400-e29b-41d4-a716-446655440005',
+          'Already Verified User',
+          'User with verified email but still has token',
+          '1990-08-15',
+          'verified@example.com',
+          '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- password: password
+          true,
+          'verification-token-12345',
+          NOW() + INTERVAL '1 day',
+          '+1122334455',
+          NULL,
+          'male',
+          'user',
+          NOW(),
+          'UTC',
+          'active',
+          NOW(),
+          NOW()
+      ),
+      (
           '550e8400-e29b-41d4-a716-446655440004',
           'Error User',
           'User for error testing',

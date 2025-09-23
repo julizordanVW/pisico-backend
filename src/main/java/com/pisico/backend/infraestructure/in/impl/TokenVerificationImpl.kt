@@ -1,7 +1,7 @@
 package com.pisico.backend.infraestructure.`in`.impl
 
+import com.pisico.backend.application.exception.EmailAlreadyVerifiedException
 import com.pisico.backend.application.exception.InvalidTokenException
-import com.pisico.backend.application.exception.UserNotFoundException
 import com.pisico.backend.application.useCases.TokenVerificator
 import com.pisico.backend.infraestructure.`in`.controller.auth.EmailVerificationController
 import com.pisico.backend.infraestructure.`in`.dto.VerifyEmailRequest
@@ -28,18 +28,17 @@ class TokenVerificationImpl(
             )
 
             ResponseEntity(responseBody, HttpStatus.OK)
-
-        } catch (e: UserNotFoundException) {
-            val errorResponse = mapOf<String, Any>(
-                "success" to false,
-                "message" to "Token not found."
-            )
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
-
         } catch (e: InvalidTokenException) {
             val errorResponse = mapOf<String, Any>(
                 "success" to false,
-                "message" to (e.message ?: "Invalid or expired token.")
+                "message" to (e.message ?: "Token expired.")
+            )
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
+
+        } catch (e: EmailAlreadyVerifiedException) {
+            val errorResponse = mapOf<String, Any>(
+                "success" to false,
+                "message" to (e.message ?: "Email already verified")
             )
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
 

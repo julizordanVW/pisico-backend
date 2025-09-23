@@ -1,12 +1,12 @@
 package com.pisico.backend.infraestructure.out
 
+import com.pisico.backend.application.exception.EmailAlreadyVerifiedException
 import com.pisico.backend.application.exception.InvalidTokenException
 import com.pisico.backend.application.exception.InvalidUserRegistrationException
-import com.pisico.backend.application.exception.UserNotFoundException
 import com.pisico.backend.application.ports.out.UserRepository
 import com.pisico.backend.domain.entities.User
-import com.pisico.backend.infraestructure.mapper.UserMapper
 import com.pisico.backend.domain.entities.UserVerification
+import com.pisico.backend.infraestructure.mapper.UserMapper
 import com.pisico.backend.jooq.generated.Tables.USERS
 import com.pisico.backend.jooq.generated.tables.records.UsersRecord
 import org.jooq.DSLContext
@@ -31,14 +31,14 @@ open class UserAdapter(
     override fun verifyToken(token: String) : UserVerification {
         val userRecord = dslContext.selectFrom(USERS)
             .where(USERS.VERIFICATION_TOKEN.eq(token))
-            .fetchOne() ?: throw UserNotFoundException("User not found")
+            .fetchOne() ?: throw InvalidTokenException("Invalid or expired verification token")
 
-        if (userRecord.tokenExpiryDate.isBefore(LocalDateTime.now())) {
-            throw InvalidTokenException("Token expired")
+        if (userRecord.get(USERS.TOKEN_EXPIRY_DATE) == null || userRecord.get(USERS.TOKEN_EXPIRY_DATE).isBefore(LocalDateTime.now())) {
+            throw InvalidTokenException("Token expired.")
         }
 
-        if (userRecord.emailVerified) {
-            throw InvalidTokenException("Email already verified")
+        if (userRecord.get(USERS.EMAIL_VERIFIED)) {
+            throw EmailAlreadyVerifiedException("Email already verified")
         }
 
         try {
@@ -47,22 +47,23 @@ open class UserAdapter(
                 .set(USERS.VERIFICATION_TOKEN, null as String?)
                 .set(USERS.TOKEN_EXPIRY_DATE, null as LocalDateTime?)
                 .set(USERS.ROW_UPDATED_ON, LocalDateTime.now())
-                .where(USERS.ID.eq(userRecord.id))
+                .where(USERS.ID.eq(userRecord.get(USERS.ID)))
                 .execute()
 
             if (rowsAffected == 0) {
-                throw IllegalStateException("No user found with id ${userRecord.id}")
+                throw IllegalStateException("No user found with id ${userRecord.get(USERS.ID)}")
             }
 
             return UserVerification(
-                email = userRecord.email,
+                email = userRecord.get(USERS.EMAIL),
                 emailVerified = true
             )
 
         } catch (e: DataAccessException) {
-            throw IllegalStateException("Failed to verify token for user ${userRecord.id}.", e)
+            throw IllegalStateException("Failed to verify token for user ${userRecord.get(USERS.ID)}.", e)
         }
     }
+
 
     override fun save(
         user: User,

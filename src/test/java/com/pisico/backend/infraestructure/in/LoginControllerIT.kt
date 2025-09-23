@@ -276,7 +276,7 @@ class LoginControllerIT : AbstractIntegrationTest() {
     // === INACTIVE USER TEST ===
 
     @Test
-    fun `should return 200 for inactive user if login logic allows it`() {
+    fun `should return 401 for inactive user`() {
         val request = LoginByEmailRequest(
             email = "inactive@example.com",
             password = "password"
@@ -288,8 +288,8 @@ class LoginControllerIT : AbstractIntegrationTest() {
             .`when`()
             .post(url)
             .then()
-            .statusCode(200)
-            .body("message", Matchers.equalTo("Login successful."))
+            .statusCode(401)
+            .body("message", Matchers.equalTo("Account is not active."))
     }
 
     // === HTTP ERROR TESTS ===

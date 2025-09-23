@@ -15,6 +15,10 @@ class UserLoginHandler(
         val user = userRepository.findByEmail(request.email)
             ?: throw InvalidCredentialsException("Invalid email or password.")
         
+        if(user.accountStatus != "active") {
+            throw InvalidCredentialsException("Account is not active.")
+        }
+        
         if (user.emailVerified == false) {
             throw InvalidCredentialsException("Email not verified.")
         }

@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.HttpStatusEntryPoint
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -17,6 +17,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 @EnableWebSecurity
 open class SpringConfig {
+
+    @Autowired
+    private lateinit var customAuthenticationEntryPoint: CustomAuthenticationEntryPoint
 
     @Bean
     open fun passwordEncoder(): PasswordEncoder {
@@ -56,7 +59,10 @@ open class SpringConfig {
             }
             .exceptionHandling { e ->
                 e
-                    .authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+                    .accessDeniedHandler { _, response, _ ->
+                        response.status = HttpStatus.FORBIDDEN.value()
+                    }
             }
             .oauth2Login { oauth ->
                 oauth

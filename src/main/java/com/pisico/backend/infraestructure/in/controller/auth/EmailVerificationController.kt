@@ -25,8 +25,16 @@ interface EmailVerificationController{
                 description = "Email verified successfully"
             ),
             ApiResponse(
+                responseCode = "400",
+                description = "Invalid or expired verification token"
+            ),
+            ApiResponse(
                 responseCode = "404",
                 description = "Not valid endpoint",
+            ),
+            ApiResponse(
+                responseCode = "405",
+                description = "Method not Allowed",
             ),
             ApiResponse(
                 responseCode = "500",
