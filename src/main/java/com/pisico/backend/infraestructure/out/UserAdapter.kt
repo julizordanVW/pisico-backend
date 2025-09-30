@@ -1,6 +1,7 @@
 package com.pisico.backend.infraestructure.out
 
 import com.pisico.backend.application.exception.EmailAlreadyVerifiedException
+import com.pisico.backend.application.exception.InvalidCredentialsException
 import com.pisico.backend.application.exception.InvalidTokenException
 import com.pisico.backend.application.exception.InvalidUserRegistrationException
 import com.pisico.backend.application.ports.out.UserRepository
@@ -108,35 +109,20 @@ open class UserAdapter(
         }
     }
 
-    fun updateUser(user: User): User {
+    override fun updateVerificationToken(email: String, token: String, expiryDate: OffsetDateTime) {
         try {
             val rowsAffected = dslContext.update(USERS)
-                .set(USERS.NAME, user.name)
-                .set(USERS.DESCRIPTION, user.description)
-                .set(USERS.DATE_OF_BIRTH, user.dateOfBirth)
-                .set(USERS.EMAIL, user.email)
-                .set(USERS.PASSWORD_HASH, user.password)
-                .set(USERS.EMAIL_VERIFIED, user.emailVerified)
-                .set(USERS.VERIFICATION_TOKEN, user.verificationToken)
-                .set(USERS.TOKEN_EXPIRY_DATE, user.tokenExpiryDate?.toLocalDateTime())
-                .set(USERS.PHONE_NUMBER, user.phoneNumber)
-                .set(USERS.PROFILE_PICTURE_URL, user.profilePictureUrl)
-                .set(USERS.GENDER, user.gender.name)
-                .set(USERS.ROLE, user.role)
-                .set(USERS.ACCOUNT_STATUS, user.accountStatus)
-                .set(USERS.TIME_ZONE, user.timeZone)
+                .set(USERS.VERIFICATION_TOKEN, token)
+                .set(USERS.TOKEN_EXPIRY_DATE, expiryDate.toLocalDateTime())
                 .set(USERS.ROW_UPDATED_ON, LocalDateTime.now())
-                .where(USERS.ID.eq(user.id))
+                .where(USERS.EMAIL.eq(email))
                 .execute()
 
             if (rowsAffected == 0) {
-                throw IllegalStateException("No user found with id ${user.id}")
+                throw InvalidCredentialsException("No user found with email $email")
             }
-
-            return user.copy()
-
         } catch (e: DataAccessException) {
-            throw IllegalStateException("Failed to update user with id ${user.id}.", e)
+            throw IllegalStateException("Failed to update verification token for $email.", e)
         }
     }
 }

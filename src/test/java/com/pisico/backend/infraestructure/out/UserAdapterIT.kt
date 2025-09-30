@@ -555,4 +555,239 @@ open class UserAdapterIT : AbstractIntegrationTest() {
 
         assertTrue(verifiedUser.get(USERS.EMAIL_VERIFIED))
     }
+
+    // === UPDATE VERIFICATION TOKEN TESTS ===
+
+    @Test
+    fun `should update verification token successfully for existing user`() {
+        // Given
+        userAdapter.save(testUser, hashedPassword, verificationToken, tokenExpiryDate)
+
+        val newToken = "new-verification-token-456"
+        val newExpiryDate = OffsetDateTime.now().plusDays(2)
+
+        // When
+        userAdapter.updateVerificationToken(testUser.email!!, newToken, newExpiryDate)
+
+        // Then
+        val updatedUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        assertThat(updatedUser.get(USERS.VERIFICATION_TOKEN)).isEqualTo(newToken)
+        assertThat(updatedUser.get(USERS.TOKEN_EXPIRY_DATE)).isNotNull()
+        assertThat(updatedUser.get(USERS.ROW_UPDATED_ON)).isNotNull()
+    }
+
+    @Test
+    fun `should throw InvalidCredentialsException when updating token for non-existent user`() {
+        // Given
+        val nonExistentEmail = "nonexistent@example.com"
+        val newToken = "new-token-123"
+        val newExpiryDate = OffsetDateTime.now().plusDays(1)
+
+        // When & Then
+        assertFailsWith<com.pisico.backend.application.exception.InvalidCredentialsException> {
+            userAdapter.updateVerificationToken(nonExistentEmail, newToken, newExpiryDate)
+        }
+    }
+
+    @Test
+    fun `should update token and expiry date correctly`() {
+        // Given
+        userAdapter.save(testUser, hashedPassword, verificationToken, tokenExpiryDate)
+
+        val originalUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        val originalToken = originalUser.get(USERS.VERIFICATION_TOKEN)
+        val originalExpiryDate = originalUser.get(USERS.TOKEN_EXPIRY_DATE)
+
+        val newToken = "updated-token-789"
+        val newExpiryDate = OffsetDateTime.now().plusHours(12)
+
+        // Small delay to ensure different timestamps
+        Thread.sleep(1)
+
+        // When
+        userAdapter.updateVerificationToken(testUser.email!!, newToken, newExpiryDate)
+
+        // Then
+        val updatedUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        assertThat(updatedUser.get(USERS.VERIFICATION_TOKEN)).isNotEqualTo(originalToken)
+        assertThat(updatedUser.get(USERS.VERIFICATION_TOKEN)).isEqualTo(newToken)
+        assertThat(updatedUser.get(USERS.TOKEN_EXPIRY_DATE)).isNotEqualTo(originalExpiryDate)
+        assertThat(updatedUser.get(USERS.ROW_UPDATED_ON)).isAfter(originalUser.get(USERS.ROW_UPDATED_ON))
+    }
+
+    @Test
+    fun `should preserve other user data when updating verification token`() {
+        // Given
+        userAdapter.save(testUser, hashedPassword, verificationToken, tokenExpiryDate)
+
+        val originalUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        val originalName = originalUser.get(USERS.NAME)
+        val originalEmail = originalUser.get(USERS.EMAIL)
+        val originalPasswordHash = originalUser.get(USERS.PASSWORD_HASH)
+        val originalEmailVerified = originalUser.get(USERS.EMAIL_VERIFIED)
+
+        val newToken = "replacement-token"
+        val newExpiryDate = OffsetDateTime.now().plusDays(3)
+
+        // When
+        userAdapter.updateVerificationToken(testUser.email!!, newToken, newExpiryDate)
+
+        // Then
+        val updatedUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        assertThat(updatedUser.get(USERS.NAME)).isEqualTo(originalName)
+        assertThat(updatedUser.get(USERS.EMAIL)).isEqualTo(originalEmail)
+        assertThat(updatedUser.get(USERS.PASSWORD_HASH)).isEqualTo(originalPasswordHash)
+        assertThat(updatedUser.get(USERS.EMAIL_VERIFIED)).isEqualTo(originalEmailVerified)
+    }
+
+    @Test
+    fun `should handle multiple token updates for same user`() {
+        // Given
+        userAdapter.save(testUser, hashedPassword, verificationToken, tokenExpiryDate)
+
+        val firstToken = "first-token"
+        val firstExpiryDate = OffsetDateTime.now().plusDays(1)
+
+        val secondToken = "second-token"
+        val secondExpiryDate = OffsetDateTime.now().plusDays(2)
+
+        val thirdToken = "third-token"
+        val thirdExpiryDate = OffsetDateTime.now().plusDays(3)
+
+        // When
+        userAdapter.updateVerificationToken(testUser.email!!, firstToken, firstExpiryDate)
+        Thread.sleep(1)
+        userAdapter.updateVerificationToken(testUser.email!!, secondToken, secondExpiryDate)
+        Thread.sleep(1)
+        userAdapter.updateVerificationToken(testUser.email!!, thirdToken, thirdExpiryDate)
+
+        // Then
+        val finalUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        assertThat(finalUser.get(USERS.VERIFICATION_TOKEN)).isEqualTo(thirdToken)
+    }
+
+    @Test
+    fun `should update token with special characters`() {
+        // Given
+        userAdapter.save(testUser, hashedPassword, verificationToken, tokenExpiryDate)
+
+        val specialToken = "token-with-special@chars#123!$%^&*()"
+        val newExpiryDate = OffsetDateTime.now().plusDays(1)
+
+        // When
+        userAdapter.updateVerificationToken(testUser.email!!, specialToken, newExpiryDate)
+
+        // Then
+        val updatedUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        assertThat(updatedUser.get(USERS.VERIFICATION_TOKEN)).isEqualTo(specialToken)
+    }
+
+    @Test
+    fun `should update token with very long expiry date`() {
+        // Given
+        userAdapter.save(testUser, hashedPassword, verificationToken, tokenExpiryDate)
+
+        val newToken = "long-expiry-token"
+        val veryLongExpiryDate = OffsetDateTime.now().plusYears(10)
+
+        // When
+        userAdapter.updateVerificationToken(testUser.email!!, newToken, veryLongExpiryDate)
+
+        // Then
+        val updatedUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        assertThat(updatedUser.get(USERS.VERIFICATION_TOKEN)).isEqualTo(newToken)
+        assertThat(updatedUser.get(USERS.TOKEN_EXPIRY_DATE)).isNotNull()
+    }
+
+    @Test
+    fun `should update token for user with already verified email`() {
+        // Given - Save user and verify email
+        userAdapter.save(testUser, hashedPassword, verificationToken, tokenExpiryDate)
+        userAdapter.verifyToken(verificationToken)
+
+        val newToken = "resend-token-123"
+        val newExpiryDate = OffsetDateTime.now().plusDays(1)
+
+        // When - Should allow token update even if email is verified
+        userAdapter.updateVerificationToken(testUser.email!!, newToken, newExpiryDate)
+
+        // Then
+        val updatedUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        assertThat(updatedUser.get(USERS.VERIFICATION_TOKEN)).isEqualTo(newToken)
+        assertThat(updatedUser.get(USERS.EMAIL_VERIFIED)).isTrue()
+    }
+
+    @Test
+    fun `should handle empty token string when updating`() {
+        // Given
+        userAdapter.save(testUser, hashedPassword, verificationToken, tokenExpiryDate)
+
+        val emptyToken = ""
+        val newExpiryDate = OffsetDateTime.now().plusDays(1)
+
+        // When
+        userAdapter.updateVerificationToken(testUser.email!!, emptyToken, newExpiryDate)
+
+        // Then
+        val updatedUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        assertThat(updatedUser.get(USERS.VERIFICATION_TOKEN)).isEqualTo(emptyToken)
+    }
+
+    @Test
+    fun `should update row timestamp when updating verification token`() {
+        // Given
+        userAdapter.save(testUser, hashedPassword, verificationToken, tokenExpiryDate)
+
+        val originalUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        val originalUpdatedTime = originalUser.get(USERS.ROW_UPDATED_ON)
+
+        // Small delay to ensure different timestamps
+        Thread.sleep(1)
+
+        val newToken = "timestamp-test-token"
+        val newExpiryDate = OffsetDateTime.now().plusDays(1)
+
+        // When
+        userAdapter.updateVerificationToken(testUser.email!!, newToken, newExpiryDate)
+
+        // Then
+        val updatedUser = dslContext.selectFrom(USERS)
+            .where(USERS.EMAIL.eq(testUser.email))
+            .fetchOne()!!
+
+        assertThat(updatedUser.get(USERS.ROW_UPDATED_ON)).isAfter(originalUpdatedTime)
+    }
 }
