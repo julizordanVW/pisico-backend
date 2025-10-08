@@ -51,6 +51,8 @@ open class SpringConfig {
                     .requestMatchers("/auth/check-email/**").permitAll()
                     .requestMatchers("/auth/verify/**").permitAll()
                     .requestMatchers("/auth/verify/resend/**").permitAll()
+                    .requestMatchers("/auth/phone-verification/send/**").permitAll()
+                    .requestMatchers("/auth/phone-verification/validate/**").permitAll()
                     .requestMatchers(
                         "/", "/static/**", "/logo.png","/index.html", "/error", "/webjars/**",
                         "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",

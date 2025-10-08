@@ -4,7 +4,7 @@ import com.pisico.backend.application.exception.EmailAlreadyVerifiedException
 import com.pisico.backend.application.exception.InvalidTokenException
 import com.pisico.backend.application.useCases.TokenVerificator
 import com.pisico.backend.infraestructure.`in`.controller.auth.EmailVerificationController
-import com.pisico.backend.infraestructure.`in`.dto.VerifyEmailRequest
+import com.pisico.backend.infraestructure.`in`.dto.auth.VerifyEmailRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController

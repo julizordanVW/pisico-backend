@@ -1,7 +1,6 @@
 package com.pisico.backend.infraestructure.`in`.controller.auth
 
-import com.pisico.backend.infraestructure.`in`.dto.LoginByEmailRequest
-import com.pisico.backend.infraestructure.`in`.dto.RegisterByEmailRequest
+import com.pisico.backend.infraestructure.`in`.dto.auth.LoginByEmailRequest
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag

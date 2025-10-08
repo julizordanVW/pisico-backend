@@ -5,7 +5,7 @@ import com.pisico.backend.application.exception.InvalidCredentialsException
 import com.pisico.backend.application.exception.TooManyRequestsException
 import com.pisico.backend.application.useCases.VerificationEmailResender
 import com.pisico.backend.infraestructure.`in`.controller.auth.ResendEmailController
-import com.pisico.backend.infraestructure.`in`.dto.ResendEmailRequest
+import com.pisico.backend.infraestructure.`in`.dto.auth.ResendEmailRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController

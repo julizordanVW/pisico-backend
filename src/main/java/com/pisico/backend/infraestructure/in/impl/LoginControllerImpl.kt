@@ -4,7 +4,7 @@ import com.pisico.backend.application.exception.InvalidCredentialsException
 import com.pisico.backend.application.exception.InvalidUserRegistrationException
 import com.pisico.backend.application.useCases.UserLoginHandler
 import com.pisico.backend.infraestructure.`in`.controller.auth.LoginController
-import com.pisico.backend.infraestructure.`in`.dto.LoginByEmailRequest
+import com.pisico.backend.infraestructure.`in`.dto.auth.LoginByEmailRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController

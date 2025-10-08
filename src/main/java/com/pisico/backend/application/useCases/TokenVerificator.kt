@@ -2,7 +2,7 @@ package com.pisico.backend.application.useCases
 
 import com.pisico.backend.application.ports.out.UserRepository
 import com.pisico.backend.domain.entities.UserVerification
-import com.pisico.backend.infraestructure.`in`.dto.VerifyEmailRequest
+import com.pisico.backend.infraestructure.`in`.dto.auth.VerifyEmailRequest
 import org.springframework.stereotype.Service
 
 @Service

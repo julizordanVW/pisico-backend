@@ -3,7 +3,7 @@ package com.pisico.backend.infraestructure.`in`.impl
 import com.pisico.backend.application.exception.InvalidUserRegistrationException
 import com.pisico.backend.application.useCases.UserRegistrator
 import com.pisico.backend.infraestructure.`in`.controller.auth.RegisterController
-import com.pisico.backend.infraestructure.`in`.dto.RegisterByEmailRequest
+import com.pisico.backend.infraestructure.`in`.dto.auth.RegisterByEmailRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController

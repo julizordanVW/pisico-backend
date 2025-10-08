@@ -1,7 +1,7 @@
 package com.pisico.backend.infraestructure.`in`
 
 import com.pisico.backend.config.AbstractIntegrationTest
-import com.pisico.backend.infraestructure.`in`.dto.LoginByEmailRequest
+import com.pisico.backend.infraestructure.`in`.dto.auth.LoginByEmailRequest
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType

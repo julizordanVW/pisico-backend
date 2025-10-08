@@ -1,42 +1,35 @@
 package com.pisico.backend.infraestructure.`in`.controller.auth
 
-import com.pisico.backend.infraestructure.`in`.dto.auth.ResendEmailRequest
-import io.swagger.v3.oas.annotations.responses.ApiResponse
-import io.swagger.v3.oas.annotations.responses.ApiResponses
+import com.pisico.backend.infraestructure.`in`.dto.auth.VerifyPhoneRequest
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 
-@RequestMapping("auth/verify/resend")
-interface ResendEmailController{
+@RequestMapping("auth/phone-verification/send")
+internal interface SendPhoneVerificationController {
+
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    @Tag(name = "Auth", description = "Endpoints related to resend a new email to an user")
+    @Tag(name = "Auth", description = "Endpoints related to phone verification")
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "Email sent successfully"
+                description = "Verification code sent successfully"
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "Email already verified"
-            ),
-            ApiResponse(
-                responseCode = "404",
-                description = "User not found",
+                description = "Invalid phone number"
             ),
             ApiResponse(
                 responseCode = "429",
-                description = "Too many requests. Please wait 2 minutes"
-            ),
-            ApiResponse(
-                responseCode = "405",
-                description = "Method not Allowed",
+                description = "Too many requests"
             ),
             ApiResponse(
                 responseCode = "500",
@@ -44,6 +37,7 @@ interface ResendEmailController{
             )
         ]
     )
-
-    fun resendEmail(@RequestBody request: ResendEmailRequest): ResponseEntity<Map<String, Any>>
+    fun sendVerificationCode(
+        @RequestBody request: VerifyPhoneRequest
+    ): ResponseEntity<Map<String, Any>>
 }
